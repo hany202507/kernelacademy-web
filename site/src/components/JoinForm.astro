@@ -1,0 +1,109 @@
+---
+import { COMPANY } from '../data/site';
+
+/**
+ * 가입 폼.
+ *
+ * 수집은 이메일 하나 + 소속 유형(선택)뿐이다. 이름은 받지 않는다 —
+ * 지금 쓸 데가 없고, 최소수집 원칙에 맞다.
+ *
+ * 발송 서비스는 Stibee(국내). 국내 서비스라 개인정보 국외이전 고지 의무를 피한다.
+ * 리스트를 만들면 PUBLIC_STIBEE_FORM_ACTION 에 폼 action URL 을 넣는다.
+ */
+const action = import.meta.env.PUBLIC_STIBEE_FORM_ACTION ?? '';
+const live = action.length > 0;
+
+const SEGMENTS = ['회계법인', '기업 재무팀', '세무사무소', '학계', '학생', '기타'];
+---
+
+{
+  live ? (
+    <form class="join" action={action} method="post" target="_blank" rel="noopener">
+      <div class="row">
+        <label class="field field--email">
+          <span class="lab">이메일 <em>필수</em></span>
+          <input type="email" name="email" required autocomplete="email" placeholder="name@example.com" />
+        </label>
+        <label class="field">
+          <span class="lab">소속 <em class="opt">선택</em></span>
+          <select name="segment">
+            <option value="">선택 안 함</option>
+            {SEGMENTS.map((s) => (
+              <option value={s}>{s}</option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      <ul class="agree">
+        <li>
+          <label>
+            <input type="checkbox" name="agree_required" required />
+            <span>
+              <strong>[필수]</strong> 아래 「수집하는 것과 쓰는 곳」에 동의합니다.
+            </span>
+          </label>
+        </li>
+        <li>
+          <label>
+            <input type="checkbox" name="agree_optional" />
+            <span>
+              <strong>[선택]</strong> 부트캠프 모집·커뮤니티 개설 등 그 밖의 안내도 받겠습니다.
+            </span>
+          </label>
+        </li>
+      </ul>
+
+      <button class="btn" type="submit">가입하기</button>
+    </form>
+  ) : (
+    <div class="join">
+      <p class="fallback">
+        가입 폼을 준비하고 있습니다. 우선 메일로 알려 주시면 명단에 넣어 드리고,
+        자료가 열리는 대로 안내드리겠습니다.
+      </p>
+      <a
+        class="btn"
+        href={`mailto:${COMPANY.email}?subject=${encodeURIComponent('가입 신청')}&body=${encodeURIComponent(
+          '소속 유형(회계법인 / 기업 재무팀 / 세무사무소 / 학계 / 학생 / 기타):\n\n'
+        )}`}
+      >
+        {COMPANY.email}
+      </a>
+      <p class="small muted note">
+        메일로 주신 주소는 아래 「수집하는 것과 쓰는 곳」과 동일한 범위에서만 씁니다.
+      </p>
+    </div>
+  )
+}
+
+<style>
+  .join { margin: 0; }
+  .row { display: flex; flex-wrap: wrap; gap: 0.7rem; align-items: end; }
+  .field { display: flex; flex-direction: column; gap: 0.3rem; flex: 1 1 12rem; }
+  .field--email { flex: 2 1 17rem; }
+  .lab { font-family: var(--sans); font-size: 0.8rem; font-weight: 600; color: var(--ink-2); }
+  .lab em { font-style: normal; font-weight: 600; color: var(--b-J); font-size: 0.74rem; margin-left: 0.2em; }
+  .lab em.opt { color: var(--ink-3); }
+
+  input[type='email'], select {
+    font: inherit;
+    font-size: 0.95rem;
+    padding: 0.58em 0.75em;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: var(--bg);
+    color: var(--ink);
+    width: 100%;
+  }
+  input:focus, select:focus { border-color: var(--accent); }
+
+  .agree { list-style: none; margin: 1.3rem 0; padding: 0; font-family: var(--sans); }
+  .agree li { margin-bottom: 0.55rem; }
+  .agree label { display: flex; gap: 0.6rem; align-items: start; font-size: 0.9rem; cursor: pointer; }
+  .agree input { margin-top: 0.28em; flex: none; accent-color: var(--accent); }
+  .agree strong { font-weight: 600; }
+
+  .fallback { margin: 0 0 1rem; }
+  .note { margin: 0.9rem 0 0; }
+</style>

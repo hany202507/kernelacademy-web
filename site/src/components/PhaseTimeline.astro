@@ -1,0 +1,164 @@
+---
+import { CNC_STATS, CNC_PHASES } from '../data/cnc';
+
+/** `**강조**` 만 해석한다. 데이터에 마크다운을 통째로 넣지 않기 위해 최소한만. */
+function bold(s: string) {
+  return s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+}
+---
+
+<figure class="pt">
+  <header class="pt-head">
+    <div>
+      <p class="eyebrow">C&amp;C AI LABS · 제1기 · 2026.04 — 07</p>
+      <h3 class="pt-title">AI Labs 1기 <span class="accent">성과 요약</span></h3>
+      <p class="pt-sub small muted">
+        2026년 4월부터 7월까지 — 데이터 파이프라인 구축, 대시보드 가동, 전사 업무 자동화,
+        현장 시스템 배포까지 월별 주요 성과입니다.
+      </p>
+    </div>
+    <ul class="stats">
+      {
+        CNC_STATS.map((s) => (
+          <li class="stat">
+            <span class="stat-v num">{s.value}<span class="stat-u">{s.unit}</span></span>
+            <span class="stat-l">{s.label}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </header>
+
+  <ol class="phases">
+    {
+      CNC_PHASES.map((p) => (
+        <li class="phase">
+          <div class="phase-head">
+            <span class="pin num" aria-hidden="true">{p.month}</span>
+            <div>
+              <p class="ph-title">
+                <span class="sr-only">{p.month} — </span>{p.title}
+              </p>
+              <p class="ph-en">{p.en}</p>
+            </div>
+          </div>
+          <div class="phase-body">
+            <p class="ph-headline">{p.headline}</p>
+            <ul>
+              {p.items.map((i) => <li set:html={bold(i)} />)}
+            </ul>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+
+  <figcaption class="pt-foot small">
+    수주·구매·납기 오퍼레이션 효율화 과제는 현재 진행 중입니다.
+  </figcaption>
+</figure>
+
+<style>
+  .pt {
+    margin: 2rem 0;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    background: var(--bg);
+  }
+
+  .pt-head {
+    display: grid;
+    gap: 1.5rem;
+    align-items: start;
+    padding-bottom: 1.5rem;
+  }
+  @media (min-width: 56rem) { .pt-head { grid-template-columns: 1fr auto; } }
+
+  .pt-title { margin: 0 0 0.35rem; font-size: clamp(1.35rem, 1rem + 1.4vw, 1.9rem); }
+  .accent { color: var(--accent); }
+  .pt-sub { margin: 0; max-width: 34rem; }
+
+  .stats {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+  .stat {
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 0.6rem 0.85rem;
+    background: var(--bg-soft);
+    min-width: 8.5rem;
+  }
+  .stat-v { display: block; font-size: 1.35rem; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; }
+  .stat-u { font-size: 0.8rem; font-weight: 600; margin-left: 0.08em; }
+  .stat-l { display: block; font-size: 0.76rem; color: var(--ink-2); line-height: 1.45; margin-top: 0.15rem; }
+
+  .phases {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+    border-top: 1px solid var(--line);
+    padding-top: 1.5rem;
+  }
+  @media (min-width: 50rem) { .phases { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 76rem) { .phases { grid-template-columns: repeat(4, 1fr); } }
+
+  .phase { margin: 0; display: flex; flex-direction: column; }
+  .phase-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.65rem; }
+  .pin {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.3rem;
+    height: 2.3rem;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--bg-soft);
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+  .ph-title { margin: 0; font-weight: 600; line-height: 1.3; font-size: 1rem; }
+  .ph-en {
+    margin: 0;
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    color: var(--ink-3);
+    font-weight: 600;
+  }
+
+  .phase-body {
+    flex: 1;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 1rem 1.1rem;
+    background: var(--bg);
+  }
+  .ph-headline {
+    margin: 0 0 0.75rem;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid var(--line);
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .phase-body ul { margin: 0; padding-left: 1.05rem; }
+  .phase-body li { font-size: 0.87rem; line-height: 1.6; margin-bottom: 0.5em; color: var(--ink-2); }
+  .phase-body li:last-child { margin-bottom: 0; }
+  .phase-body :global(strong) { color: var(--ink); font-weight: 600; }
+
+  .pt-foot {
+    margin-top: 1.35rem;
+    padding: 0.7rem 1rem;
+    border-radius: 3px;
+    background: var(--bg-soft);
+    color: var(--ink-2);
+  }
+</style>

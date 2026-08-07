@@ -1,0 +1,145 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import BlockBadge from '../../components/BlockBadge.astro';
+import Matrix from '../../components/Matrix.astro';
+import { workflowSteps } from '../../lib/canon';
+import { SITE } from '../../data/site';
+
+const workflows = (await getCollection('workflows')).sort((a, b) => a.data.order - b.data.order);
+
+const cards = workflows.map((w) => ({
+  ...w.data,
+  steps: workflowSteps(w.body ?? ''),
+}));
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: `${SITE.curriculum} 업무 워크플로 7종`,
+  itemListElement: cards.map((w, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: w.title,
+    description: `대표 시나리오 ${w.scenario} · 조합 ${w.combo.join('→')}`,
+  })),
+};
+---
+
+<Base
+  title="워크플로우"
+  description="세무·회계결산·자금·감사대응·내부통제·보고·예산관리 — 업무 단위로 기능을 조립하는 7개 워크플로와 전체 지도."
+  schema={schema}
+>
+  <section class="section section--tint pagehead">
+    <div class="prose">
+      <p class="eyebrow">워크플로우</p>
+      <h1>내 업무에서는 이렇게 조립합니다</h1>
+      <p class="lede">
+        실무자는 기능이 아니라 업무 단위로 과제를 인식합니다. 부가세 매입세액 불공제,
+        결산 대사와 같은 형태입니다. 이에 따라 기능 축과 별도로
+        <strong>업무 단위의 조립 순서</strong>를 제시합니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- ① 7워크플로 -->
+  <section class="section">
+    <div class="prose-wide">
+      <h2 class="lead-h">업무 일곱 갈래</h2>
+      <p class="lede">
+        각 항목을 펼치면 어느 기능이 어떤 순서로 배치되는지 확인할 수 있습니다.
+        동일한 기능이라도 업무에 따라 수행 내용이 달라집니다.
+      </p>
+    </div>
+
+    <div class="wrap">
+      <div class="flows">
+        {
+          cards.map((w) => (
+            <details class="flow">
+              <summary>
+                <span class="flow-name">{w.title}</span>
+                <span class="flow-scn small muted">{w.scenario}</span>
+                <span class="combo" aria-label={`사용 기능 ${w.combo.join(', ')}`}>
+                  {w.combo.map((c) => (
+                    <BlockBadge id={c} size="sm" />
+                  ))}
+                </span>
+              </summary>
+              <div class="flow-body">
+                <ol class="steps">
+                  {w.steps.map((s) => (
+                    <li>
+                      <BlockBadge id={s.block} size="sm" />
+                      <span class="small">{s.task}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ② 전체 지도 -->
+  <section class="section section--soft">
+    <div class="wrap">
+      <h2 class="lead-h">전체 지도</h2>
+      <p class="lede narrow">
+        가로축이 기능, 세로축이 업무입니다. 각 칸이 교재 한 단위에 대응하며,
+        <strong>미공개 구간은 미공개 상태로 표시합니다.</strong>
+      </p>
+      <div class="matrix-wrap">
+        <Matrix />
+      </div>
+
+      <p class="closing narrow">
+        <strong>커리큘럼 본문은 교육위원 검토를 거친 뒤 공개합니다.</strong>
+        검토 이전 공개는 위원회를 두는 취지에 반합니다. 검토가 완료된 구간부터 순차 공개합니다.
+        → <a href="/about/committee">교육위원회</a>
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .pagehead { padding-bottom: clamp(2.25rem, 4vw, 3.25rem); }
+  .pagehead .lede { margin-bottom: 0; }
+  .lead-h { margin-top: 0; }
+  .narrow { max-width: 42rem; }
+
+  .flows { display: grid; gap: 0.55rem; margin-top: 2rem; }
+  .flow { border: 1px solid var(--line); border-radius: 3px; background: var(--bg); }
+  .flow summary {
+    cursor: pointer;
+    padding: 0.95rem 1.15rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem 0.9rem;
+    flex-wrap: wrap;
+    list-style: none;
+  }
+  .flow summary::-webkit-details-marker { display: none; }
+  .flow summary::after {
+    content: '＋';
+    margin-left: auto;
+    color: var(--ink-3);
+    font-size: 0.9rem;
+    order: 9;
+  }
+  .flow[open] summary::after { content: '－'; }
+  .flow-name { font-weight: 600; }
+  .flow-scn { flex: 1 1 12rem; }
+  .combo { display: flex; gap: 0.25rem; flex-wrap: wrap; }
+
+  .flow-body { padding: 0.9rem 1.15rem 1.15rem; border-top: 1px solid var(--line); }
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.55rem; }
+  .steps li { display: flex; gap: 0.7rem; align-items: baseline; margin: 0; }
+  .steps li > span { color: var(--ink-2); line-height: 1.65; }
+
+  .matrix-wrap { margin-top: 2rem; }
+  .closing { margin-top: 2.5rem; }
+</style>

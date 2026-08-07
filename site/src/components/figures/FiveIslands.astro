@@ -1,0 +1,88 @@
+---
+// 다섯 개의 섬 → 하나의 기준
+const SYS = [
+  { n: 'SAP', d: '전사 자원관리' },
+  { n: 'MES', d: '생산 실행' },
+  { n: '더존', d: '회계·전표' },
+  { n: 'NEOE', d: '영업·수주' },
+  { n: 'MIS', d: '경영정보' },
+];
+
+const W = 640;
+const CX = 320;
+const beforeY = 62;
+const R = 33;
+const spread = 118;
+const arrowY = 152;
+const afterY = 210;
+const total = 316;
+---
+
+<svg viewBox={`0 0 ${W} ${total}`} role="img" aria-labelledby="fi-t">
+  <title id="fi-t">
+    통합 전에는 다섯 개 시스템이 각자의 매출을 갖고 있었고, 통합 후에는 하나의 기준
+    아래 표준 데이터 마트 11종이 놓였다.
+  </title>
+
+  <text x="0" y="14" font-size="11" font-weight="600" letter-spacing="0.1em" class="t-faint">
+    전 — 각자의 진실
+  </text>
+
+  {
+    SYS.map((s, i) => {
+      const x = CX + (i - 2) * spread;
+      return (
+        <g>
+          <circle cx={x} cy={beforeY} r={R} class="f-soft s-line" stroke-dasharray="3 3" />
+          <text x={x} y={beforeY - 2} font-size="12.5" font-weight="600" text-anchor="middle">{s.n}</text>
+          <text x={x} y={beforeY + 13} font-size="9.5" text-anchor="middle" class="t-faint">{s.d}</text>
+          <text x={x} y={beforeY + R + 16} font-size="10.5" text-anchor="middle" fill="var(--b-J)">
+            매출 ?
+          </text>
+        </g>
+      );
+    })
+  }
+
+  {
+    SYS.map((_, i) => {
+      const x = CX + (i - 2) * spread;
+      return (
+        <path
+          d={`M ${x} ${beforeY + R + 24} C ${x} ${arrowY - 10}, ${CX} ${arrowY - 22}, ${CX} ${arrowY - 4}`}
+          class="f-none s-mute"
+          stroke-width="1"
+          opacity="0.55"
+        />
+      );
+    })
+  }
+
+  <g>
+    <rect x={CX - 118} y={arrowY} width="236" height="30" fill="var(--accent)" />
+    <text x={CX} y={arrowY + 20} font-size="12.5" font-weight="600" text-anchor="middle" fill="#fff">
+      기준 하나 정하기 — 여기가 90%
+    </text>
+  </g>
+  <path
+    d={`M ${CX} ${arrowY + 34} l 0 14 m -5 -5 l 5 5 l 5 -5`}
+    class="f-none s-ink"
+    stroke-width="1.4"
+  />
+
+  <text x="0" y={afterY - 12} font-size="11" font-weight="600" letter-spacing="0.1em" class="t-faint">
+    후 — 하나의 기준
+  </text>
+  <rect x="0" y={afterY} width={W} height="64" class="f-deep" />
+  <text x="22" y={afterY + 27} font-size="13.5" font-weight="600">전사 표준 데이터 마트 11종</text>
+  <text x="22" y={afterY + 47} font-size="11.5" class="t-mute">
+    영업 · 수주 · 생산 · 구매 · 연구 — 매일 새벽 무인 적재 + 10분 단위 변경이력
+  </text>
+  <text x={W - 22} y={afterY + 38} font-size="11.5" text-anchor="end" fill="var(--b-V)">
+    매출 = 하나
+  </text>
+
+  <text x="0" y={total - 8} font-size="11.5" class="t-mute">
+    AI 가 붙을 표면은 시스템의 수가 아니라 기준의 수로 결정됩니다.
+  </text>
+</svg>

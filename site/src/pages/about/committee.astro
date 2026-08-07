@@ -1,0 +1,96 @@
+---
+import Base from '../../layouts/Base.astro';
+import CommitteeMember from '../../components/CommitteeMember.astro';
+
+/**
+ * 위원 소개. 요청·제안을 적는 자리가 아니다 — 그건 위촉 제안서가 따로 한다.
+ * 여기는 각 위원이 왜 참여했는지 자기 말로 남기는 자리다.
+ *
+ * 정원 7명. 위촉이 확정되는 대로 이 배열의 빈 항목을 채운다.
+ * ⚠️ quote 는 반드시 본인이 쓰거나 확인한 문장이어야 한다. 대신 지어 쓰지 않는다.
+ * ⚠️ photo 는 본인 제공분만 넣는다.
+ */
+const SEATS = 7;
+
+const MEMBERS = [
+  {
+    name: '박상정',
+    affiliation: '공인회계사 · 주식회사 커널스페이스 대표이사',
+    role: '커리큘럼 총괄',
+    quote:
+      '회계법인에서 몇 년을 교육해도 안 바뀌던 것이, 학생들과 7주를 손으로 만들어 보니 바뀌었습니다. ' +
+      '차이는 도구가 아니라 자기 업무를 직접 다시 설계해 봤는가였습니다. ' +
+      '그 경험을 회계사와 재무팀으로 옮기려고 이 커리큘럼을 만듭니다.',
+  },
+];
+
+const seats = Array.from({ length: SEATS }, (_, i) => MEMBERS[i] ?? {});
+---
+
+<Base
+  title="교육위원회"
+  description="각자의 방식으로는 부족합니다. 검증된 표준 커리큘럼이 필요하다는 데 동의한 분들이, 이 커리큘럼을 실제로 깎아냅니다."
+>
+  <section class="section section--tint pagehead">
+    <div class="prose">
+      <p class="eyebrow">교육위원회</p>
+      <h1>개인의 숙련은 표준을 대신하지 못합니다</h1>
+      <p class="lede">
+        현재 재무 현장의 AI 활용은 개인 역량에 의존합니다. 방식이 담당자마다 상이하고,
+        동료에게 이전되지 않으며, 무엇보다
+        <strong>산출 결과의 타당성을 판정할 공통 기준이 부재합니다.</strong>
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="prose">
+      <p>
+        개별 효율화로도 담당자 개인의 처리 속도는 향상됩니다. 다만 그 방식이 다음 주기에도
+        동일한 결과를 산출하는지, 담당자 교체 시 이전이 가능한지, 감사 절차에서 설명이
+        성립하는지는 어느 것도 보증되지 않습니다.
+        <strong>오차가 허용되지 않는 직무에서 지속 가능한 상태가 아닙니다.</strong>
+      </p>
+      <p>
+        따라서 필요한 것은 <strong>검증된 표준</strong>입니다. 완성도 높은 커리큘럼이 아니라
+        <strong>서로 다른 위치의 전문가가 검토하고 삭제한 커리큘럼</strong>이어야 합니다.
+        설계자가 스스로 검증하는 체계는 검증으로 성립하지 않기 때문입니다.
+      </p>
+      <p>
+        교육위원회는 이 판단을 공유하는 전문가로 구성합니다. 위원께는 자문 의견이 아니라
+        <strong>커리큘럼 구간을 실제로 삭제할 수 있는 권한</strong>을 부여합니다.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--soft">
+    <div class="prose-wide">
+      <h2 class="lead-h">위원 <span class="num">{SEATS}</span>인</h2>
+      <p class="lede intro">각 위원이 참여 취지를 직접 기술합니다.</p>
+
+      <div class="members">
+        {
+          seats.map((m, i) => (
+            <CommitteeMember
+              name={m.name}
+              affiliation={m.affiliation}
+              role={m.role}
+              quote={m.quote}
+              flip={i % 2 === 1}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .pagehead { padding-bottom: clamp(2.25rem, 4vw, 3.25rem); }
+  .pagehead .lede { margin-bottom: 0; }
+  .lead-h { margin-top: 0; }
+  .intro { max-width: 40rem; }
+
+  .members { margin-top: 1.5rem; }
+  .members > :global(.member:first-child) { border-top: 1px solid var(--line); }
+</style>

@@ -1,0 +1,269 @@
+---
+import '../styles/global.css';
+import { SITE, COMPANY, NAV, YOUTUBE } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** JSON-LD 를 추가로 붙일 때 */
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const { title, description = SITE.description, schema } = Astro.props;
+const fullTitle = title ? `${title} — ${SITE.name}` : `${SITE.name} — ${SITE.tagline}`;
+const canonical = new URL(Astro.url.pathname, SITE.url).href.replace(/\/$/, '') || SITE.url;
+const path = Astro.url.pathname.replace(/\/$/, '');
+
+const org = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: SITE.name,
+  url: SITE.url,
+  description: SITE.description,
+  parentOrganization: { '@type': 'Organization', name: COMPANY.name, url: COMPANY.site },
+};
+const schemas = [org, ...(schema ? (Array.isArray(schema) ? schema : [schema]) : [])];
+
+/** 하위 메뉴는 감추지 않는다. 지금 서 있는 구역의 하위 항목이 늘 두 번째 줄에 보인다. */
+const navItems = NAV.map((item) => ({
+  ...item,
+  key: item.href.replace(/\W+/g, '') || 'home',
+  children: 'children' in item ? item.children : undefined,
+  active: path === item.href || path.startsWith(item.href + '/'),
+}));
+const withChildren = navItems.filter((i) => i.children?.length);
+
+/** 마우스를 올린 구역의 하위 바를 보여 주는 규칙. 항목마다 짝이 필요해 여기서 만든다. */
+const hoverRules = withChildren
+  .map(
+    (i) =>
+      `.site-head:has(.gnb-item[data-key="${i.key}"]:hover) .subbar[data-key="${i.key}"],` +
+      `.site-head:has(.gnb-item[data-key="${i.key}"]:focus-within) .subbar[data-key="${i.key}"]{display:flex}`
+  )
+  .join('');
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="ko_KR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="alternate" type="application/rss+xml" title={SITE.name} href="/rss.xml" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231c1c1a'/%3E%3Ctext x='16' y='22' font-family='system-ui' font-size='17' font-weight='700' fill='%23fff' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E"
+    />
+    {schemas.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
+  </head>
+
+  <body>
+    <a class="skip" href="#main">본문으로 건너뛰기</a>
+
+    <header class="site-head">
+      <div class="brandbar">
+        <a class="brand" href="/">{SITE.name}</a>
+      </div>
+
+      <nav class="gnb" aria-label="주 메뉴">
+        {
+          navItems.map((item) => (
+            <div class="gnb-item" data-key={item.key}>
+              <a
+                class:list={['gnb-link', { 'gnb-link--cta': 'cta' in item && item.cta }]}
+                href={item.href}
+                aria-current={item.active ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </div>
+          ))
+        }
+      </nav>
+
+      {
+        withChildren.map((item) => (
+          <div
+            class:list={['subbar', { 'subbar--on': item.active }]}
+            data-key={item.key}
+            aria-label={`${item.label} 하위 메뉴`}
+          >
+            {item.children!.map((c) => (
+              <a href={c.href} aria-current={path === c.href ? 'page' : undefined}>
+                {c.label}
+              </a>
+            ))}
+          </div>
+        ))
+      }
+      <style is:inline set:html={hoverRules} />
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="site-foot">
+      <div class="wrap">
+        <div class="foot-top">
+          <div>
+            <p class="foot-brand">{SITE.name}</p>
+            <p class="small muted foot-note">
+              커리큘럼·강의자료·실습 데이터를 전면 무료로 공개합니다.
+            </p>
+          </div>
+          <nav class="foot-nav" aria-label="footer">
+            <a href="/join">가입하기</a>
+            <a href="/about">우리는 누구인가</a>
+            <a href="/about/committee">교육위원회</a>
+            <a href="/about/faq">자주 묻는 질문</a>
+            <a href="/about/license">자료 이용 조건</a>
+            <a href="/program">교육프로그램</a>
+            <a href="/program/blocks">기능별 훈련</a>
+            <a href="/program/workflows">워크플로우</a>
+            <a href="/insights">블로그</a>
+            <a href="/privacy">개인정보 처리방침</a>
+            <a href={YOUTUBE.url} rel="noopener">유튜브 「{YOUTUBE.name}」</a>
+          </nav>
+        </div>
+
+        <div class="foot-legal small">
+          <p>
+            <strong>{COMPANY.name}</strong> · 대표이사 {COMPANY.ceo} · 사업자등록번호{' '}
+            <span class="num">{COMPANY.bizNo}</span>
+          </p>
+          <p>{COMPANY.address} · <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a></p>
+          <p class="muted">© {new Date().getFullYear()} {COMPANY.nameEn}</p>
+        </div>
+      </div>
+    </footer>
+
+    <style>
+      /* 머리말은 세 층이다 — 워드마크 / 주 메뉴 / 하위 메뉴.
+         하위 메뉴를 드롭다운으로 감추지 않고 두 번째 줄에 그대로 편다. */
+      .site-head {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: var(--bg);
+        border-bottom: 1px solid var(--line);
+      }
+
+      /* ── 1층 · 워드마크 ── */
+      .brandbar {
+        position: relative;
+        display: grid;
+        place-items: center;
+        padding: 1.35rem 1.25rem 1.1rem;
+      }
+      .brand {
+        font-family: var(--serif);
+        font-size: clamp(1.4rem, 1rem + 1.6vw, 2.05rem);
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        text-indent: 0.01em; /* 자간 때문에 오른쪽이 비어 보이는 것 보정 */
+        color: var(--ink);
+        text-decoration: none;
+        line-height: 1.2;
+        white-space: nowrap;
+      }
+
+      /* ── 2층 · 주 메뉴 — 폭 전체에 고르게 ── */
+      .gnb {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: stretch;
+        gap: 0.5rem;
+        padding: 0 1.25rem;
+      }
+      .gnb-item { display: flex; }
+      .gnb-link {
+        font-family: var(--serif);
+        font-size: clamp(0.95rem, 0.86rem + 0.35vw, 1.1rem);
+        font-weight: 450;
+        color: var(--ink-3);
+        text-decoration: none;
+        padding: 0.5rem 0.25rem 0.75rem;
+        border-bottom: 2px solid transparent;
+        white-space: nowrap;
+        transition: color 0.12s, border-color 0.12s;
+      }
+      .gnb-link:hover { color: var(--ink); }
+      .gnb-link[aria-current='page'] {
+        color: var(--ink);
+        font-weight: 600;
+        border-bottom-color: var(--brand);
+      }
+      /* 유일한 행동 유도 — 버튼을 따로 두지 않고 메뉴 안에서 무게만 다르게 준다 */
+      .gnb-link--cta { color: var(--accent); font-weight: 550; }
+      .gnb-link--cta:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+      /* ── 3층 · 하위 메뉴 — 지금 구역의 것이 늘 보인다 ── */
+      .subbar {
+        display: none;
+        justify-content: space-evenly;
+        gap: 0.5rem 1.5rem;
+        flex-wrap: wrap;
+        padding: 0.62rem 1.25rem;
+        background: var(--tint);
+        border-top: 1px solid color-mix(in srgb, var(--brand) 12%, transparent);
+      }
+      .subbar--on { display: flex; }
+      .subbar a {
+        font-family: var(--serif);
+        font-size: 0.92rem;
+        color: var(--ink-2);
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .subbar a:hover { color: var(--ink); }
+      .subbar a[aria-current='page'] { color: var(--ink); font-weight: 500; }
+
+      /* 모바일 — 오픈채팅·카카오 유입이 대부분 모바일이다.
+         CTA 를 워드마크 아래로 내리고 메뉴는 줄바꿈시킨다. */
+      @media (max-width: 40rem) {
+        .brandbar { padding: 1.1rem 1rem 0.85rem; }
+        .gnb { flex-wrap: wrap; justify-content: center; gap: 0.25rem 1.35rem; padding-inline: 1rem; }
+        .subbar { justify-content: center; padding-inline: 1rem; }
+      }
+
+      .site-foot {
+        border-top: 1px solid var(--line);
+        background: var(--bg-soft);
+        padding: 3.5rem 0 3rem;
+        margin-top: 5rem;
+        font-family: var(--sans);
+      }
+      .foot-top {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.75rem 3rem;
+        justify-content: space-between;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid var(--line);
+      }
+      .foot-brand {
+        font-family: var(--serif);
+        font-size: 1.12rem;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        margin: 0 0 0.4rem;
+      }
+      .foot-note { margin: 0; max-width: 26rem; }
+      .foot-nav { display: flex; flex-wrap: wrap; gap: 0.55rem 1.5rem; font-size: 0.9rem; align-content: start; }
+      .foot-nav a { color: var(--ink-2); text-decoration: none; }
+      .foot-nav a:hover { color: var(--ink); text-decoration: underline; }
+      .foot-legal { padding-top: 1.75rem; color: var(--ink-2); line-height: 1.8; }
+      .foot-legal p { margin: 0 0 0.2rem; }
+    </style>
+  </body>
+</html>

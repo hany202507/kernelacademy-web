@@ -1,0 +1,134 @@
+---
+/**
+ * 교육위원 한 분.
+ *
+ * 초상 + 참여 취지. 위원이 자기 말로 남기는 자리다.
+ *
+ * 🔴 사진은 본인이 제공한 것만 넣는다. 실존 인물의 초상을 생성 이미지로 만들지 않는다.
+ *    photo 가 없으면 이니셜 모노그램으로 두고, 사진이 생기면 경로만 넣으면 된다.
+ * 🔴 quote 는 본인이 쓰거나 확인한 문장만 넣는다. 대신 지어 쓰지 않는다.
+ *
+ * name·quote 가 없으면 위촉 예정 자리로 렌더된다 — 비어 있는 것을 비어 있다고 둔다.
+ */
+interface Props {
+  name?: string;
+  affiliation?: string;
+  role?: string;
+  photo?: string;
+  quote?: string;
+  /** 짝수 번째는 좌우를 뒤집어 긴 목록에 리듬을 준다 */
+  flip?: boolean;
+}
+const { name, affiliation, role, photo, quote, flip = false } = Astro.props;
+const pending = !name || !quote;
+const initial = (name ?? '').replace(/[^가-힣A-Za-z]/g, '').slice(0, 2);
+---
+
+<figure class:list={['member', { 'member--flip': flip, 'member--pending': pending }]}>
+  <div class="portrait">
+    {
+      photo ? (
+        <img src={photo} alt={`${name} 사진`} width="260" height="260" loading="lazy" />
+      ) : (
+        initial && <span class="mono" aria-hidden="true">{initial}</span>
+      )
+    }
+  </div>
+
+  {
+    pending ? (
+      <p class="pending-label">위촉 예정</p>
+    ) : (
+      <>
+        <blockquote class="quote">
+          <span class="mark" aria-hidden="true">“</span>
+          <p>{quote}</p>
+        </blockquote>
+        <figcaption class="who">
+          <p class="name">{name}</p>
+          {affiliation && <p class="affil">{affiliation}</p>}
+          {role && <p class="role">{role}</p>}
+        </figcaption>
+      </>
+    )
+  }
+</figure>
+
+<style>
+  .member {
+    display: grid;
+    gap: 1.5rem 2.75rem;
+    align-items: center;
+    margin: 0;
+    padding: clamp(2.25rem, 5vw, 3.75rem) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  @media (min-width: 52rem) {
+    .member {
+      grid-template-columns: 15rem 1fr;
+      grid-template-areas: 'portrait quote' 'portrait who';
+      align-items: start;
+    }
+    .portrait { grid-area: portrait; align-self: center; }
+    .quote { grid-area: quote; }
+    .who { grid-area: who; }
+    .pending-label { grid-area: quote; }
+    .member--flip {
+      grid-template-columns: 1fr 15rem;
+      grid-template-areas: 'quote portrait' 'who portrait';
+    }
+  }
+
+  .portrait {
+    display: grid;
+    place-items: center;
+    width: min(11rem, 60%);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    overflow: hidden;
+  }
+  @media (min-width: 52rem) { .portrait { width: 100%; } }
+  .portrait img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.05); }
+  .mono {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 500;
+    color: var(--ink-3);
+  }
+
+  .quote { margin: 0; padding: 0; border: 0; font-style: normal; }
+  .mark {
+    display: block;
+    font-family: var(--serif);
+    font-size: 3.2rem;
+    line-height: 0.6;
+    color: var(--brand);
+    margin-bottom: 0.45rem;
+  }
+  .quote p {
+    margin: 0;
+    font-size: clamp(1.05rem, 0.98rem + 0.4vw, 1.24rem);
+    line-height: 1.85;
+    color: var(--ink);
+    text-wrap: pretty;
+  }
+
+  .who { margin-top: 1.4rem; }
+  .who > p { margin: 0; }
+  .name { font-size: 1.08rem; font-weight: 600; }
+  .affil { color: var(--ink-2); font-size: 0.96rem; }
+  .role { color: var(--brand); font-size: 0.9rem; font-family: var(--sans); margin-top: 0.2rem; }
+
+  /* 위촉 예정 — 자리만 남긴다 */
+  .member--pending .portrait { background: transparent; border-style: dashed; border-color: var(--ink-3); }
+  .pending-label {
+    margin: 0;
+    align-self: center;
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    color: var(--ink-3);
+  }
+</style>

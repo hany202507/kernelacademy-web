@@ -1,0 +1,83 @@
+---
+// 재무 AI 교육과정 12개에서 반복되는 주제 — 다루는 과정 수
+const ROWS = [
+  { label: '프롬프트 엔지니어링', n: 12, note: '전 과정' },
+  { label: '재무분석·보고 커멘터리', n: 10, note: '' },
+  { label: 'Excel·Copilot 연동', n: 8, note: '' },
+  { label: 'ML·예측', n: 7, note: '' },
+  { label: '커스텀 GPT·에이전트', n: 6, note: '' },
+  { label: '거버넌스·윤리', n: 6, note: '정책 수준' },
+  { label: 'Python 파이프라인', n: 4, note: '중급 이상' },
+  { label: '사기탐지·신용위험', n: 3, note: '대학 계열' },
+];
+const GAPS = [
+  { label: '결산·세무·감사 적용', n: 0 },
+  { label: 'AI 산출물 검증 절차', n: 0 },
+  { label: 'ERP·회계시스템 연동 실습', n: 0 },
+];
+
+const W = 640;
+const LX = 196; // 라벨 오른쪽 끝
+const BX = 210; // 막대 시작
+const BW = 330; // 막대 최대 폭
+const H = 24;
+const G = 9;
+const max = 12;
+const top = 34;
+const gapTop = top + ROWS.length * (H + G) + 26;
+const total = gapTop + GAPS.length * (H + G) + 8;
+---
+
+<svg viewBox={`0 0 ${W} ${total}`} role="img" aria-labelledby="tm-t">
+  <title id="tm-t">
+    재무 AI 교육 12개 과정의 주제별 채택 수. 프롬프트 엔지니어링은 12개 전부, 결산·검증·연동은 0개.
+  </title>
+
+  <text x="0" y="12" font-size="11" font-weight="600" letter-spacing="0.1em" class="t-faint">
+    다루는 과정 수 (전체 12)
+  </text>
+
+  {
+    ROWS.map((r, i) => {
+      const y = top + i * (H + G);
+      return (
+        <g>
+          <text x={LX} y={y + 16} font-size="12.5" text-anchor="end">{r.label}</text>
+          <rect x={BX} y={y} width={BW} height={H} class="f-soft" />
+          <rect x={BX} y={y} width={(BW * r.n) / max} height={H} fill="var(--accent)" opacity="0.82" />
+          <text
+            x={BX + (BW * r.n) / max - 9}
+            y={y + 16}
+            font-size="12"
+            font-weight="600"
+            text-anchor="end"
+            fill="#fff"
+          >
+            {r.n}
+          </text>
+          {r.note && (
+            <text x={BX + BW + 9} y={y + 16} font-size="11" class="t-faint">{r.note}</text>
+          )}
+        </g>
+      );
+    })
+  }
+
+  <line x1="0" y1={gapTop - 20} x2={W} y2={gapTop - 20} class="s-line" stroke-dasharray="3 4" />
+  <text x="0" y={gapTop - 5} font-size="11" font-weight="600" letter-spacing="0.1em" fill="var(--b-J)">
+    어느 과정에도 없는 것
+  </text>
+
+  {
+    GAPS.map((r, i) => {
+      const y = gapTop + 10 + i * (H + G);
+      return (
+        <g>
+          <text x={LX} y={y + 16} font-size="12.5" class="t-mute" text-anchor="end">{r.label}</text>
+          <rect x={BX} y={y} width={BW} height={H} class="f-none s-line" stroke-dasharray="3 4" />
+          <text x={BX + 10} y={y + 16} font-size="12" font-weight="600" fill="var(--b-J)">0</text>
+        </g>
+      );
+    })
+  }
+</svg>

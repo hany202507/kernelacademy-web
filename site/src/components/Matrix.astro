@@ -1,0 +1,129 @@
+---
+import { getCollection } from 'astro:content';
+import BlockBadge from './BlockBadge.astro';
+import { EMPHASIZED_BLOCKS } from '../data/site';
+
+interface Props {
+  /** 홈의 축소판은 설명을 줄인다. */
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+
+const blocks = (await getCollection('blocks')).sort((a, b) => a.data.order - b.data.order);
+const workflows = (await getCollection('workflows')).sort((a, b) => a.data.order - b.data.order);
+
+const cells = blocks.length * workflows.length;
+const open = [...blocks, ...workflows].filter((e) => e.data.공개여부 === '공개').length;
+const openCells = workflows.reduce(
+  (n, w) => n + blocks.filter((b) => w.data.combo.includes(b.data.id) && b.data.공개여부 === '공개' && w.data.공개여부 === '공개').length,
+  0
+);
+---
+
+<figure class="matrix">
+  <div class="table-wrap">
+    <table>
+      <caption class="sr-only">
+        7개 워크플로 × 6개 블록 매트릭스. 각 칸은 해당 워크플로에서 그 블록이 쓰이는지를 나타냅니다.
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col" class="corner">워크플로 \ 블록</th>
+          {
+            blocks.map((b) => (
+              <th scope="col" class:list={['bcol', { 'bcol--em': EMPHASIZED_BLOCKS.includes(b.data.id as any) }]}>
+                <BlockBadge id={b.data.id} size="sm" />
+                <span class="bname">{b.data.title}</span>
+              </th>
+            ))
+          }
+        </tr>
+      </thead>
+      <tbody>
+        {
+          workflows.map((w) => (
+            <tr>
+              <th scope="row" class="wrow">
+                {w.data.title}
+                {!compact && <span class="scenario">{w.data.scenario}</span>}
+              </th>
+              {blocks.map((b) => {
+                const used = w.data.combo.includes(b.data.id);
+                const ready = used && b.data.공개여부 === '공개' && w.data.공개여부 === '공개';
+                return (
+                  <td
+                    class:list={['cell', { 'cell--used': used, 'cell--ready': ready }]}
+                    style={`--c: var(--b-${b.data.id})`}
+                  >
+                    <span class="sr-only">
+                      {used ? (ready ? '공개' : '준비중') : '해당 없음'}
+                    </span>
+                    <span aria-hidden="true" class="dot">{used ? (ready ? '●' : '○') : ''}</span>
+                  </td>
+                );
+              })}
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <figcaption class="legend small">
+    <span><span class="dot" aria-hidden="true">●</span> 공개</span>
+    <span><span class="dot" aria-hidden="true">○</span> 준비중</span>
+    <span class="count num">{cells}칸 중 공개 {openCells}</span>
+    <span class="muted">— 비어 있는 칸을 숨기지 않습니다.</span>
+  </figcaption>
+</figure>
+
+<style>
+  .matrix { margin: 0; }
+  table { font-size: 0.9rem; }
+  th, td { border: 1px solid var(--line); }
+
+  .corner {
+    font-size: 0.76rem;
+    font-weight: 500;
+    color: var(--ink-3);
+    white-space: nowrap;
+    background: var(--bg-soft);
+  }
+  .bcol {
+    text-align: center;
+    vertical-align: bottom;
+    padding: 0.7em 0.5em;
+    white-space: nowrap;
+  }
+  .bcol--em { background: var(--bg-soft); }
+  .bname {
+    display: block;
+    margin-top: 0.3em;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+
+  .wrow { white-space: normal; min-width: 7.5rem; }
+  .scenario {
+    display: block;
+    font-size: 0.76rem;
+    font-weight: 400;
+    color: var(--ink-3);
+    margin-top: 0.15em;
+  }
+
+  .cell { text-align: center; color: var(--ink-3); }
+  .cell--used { background: color-mix(in srgb, var(--c) 6%, var(--bg)); color: var(--c); }
+  .cell--ready { background: color-mix(in srgb, var(--c) 14%, var(--bg)); }
+  .dot { font-size: 0.7rem; line-height: 1; }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.1rem;
+    margin-top: 0.9rem;
+    color: var(--ink-2);
+  }
+  .count { font-weight: 600; color: var(--ink); }
+</style>

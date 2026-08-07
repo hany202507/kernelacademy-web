@@ -1,0 +1,201 @@
+---
+import Base from '../layouts/Base.astro';
+import TeachingNews from '../components/TeachingNews.astro';
+import { TIERS, RHYTHM } from '../data/program';
+import { SITE, YOUTUBE } from '../data/site';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Course',
+  name: `${SITE.curriculum} 커리큘럼`,
+  description: '재무 업무를 핵심기능별로 분해하고 업무 워크플로로 조립하는 표준 커리큘럼.',
+  provider: { '@type': 'Organization', name: SITE.name, url: SITE.url },
+  isAccessibleForFree: true,
+  inLanguage: 'ko',
+  hasCourseInstance: TIERS.map((t) => ({
+    '@type': 'CourseInstance',
+    name: `${SITE.curriculum} ${t.name}`,
+    courseMode: 'blended',
+    description: t.desc,
+  })),
+};
+---
+
+<Base
+  title="프로그램 소개"
+  description="학습단계 셋과, 이 커리큘럼이 실제로 쓰이고 있는 자리."
+  schema={schema}
+>
+  <section class="section section--tint pagehead">
+    <div class="prose">
+      <p class="eyebrow">교육프로그램</p>
+      <h1>일을 핵심기능별로 쪼개고, 내 업무로 다시 조립합니다</h1>
+      <p class="lede">
+        도구 사용법을 다루는 과정이 아닙니다. <strong>AI에 위임할 작업과 위임하지 않을
+        작업의 경계</strong>를 재무 업무의 언어로 규정한 커리큘럼입니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- ① 학습단계 -->
+  <section class="section">
+    <div class="wrap">
+      <h2 class="lead-h">학습단계</h2>
+      <p class="lede narrow">
+        동일한 커리큘럼을 학습 시간과 깊이로 구분한 것입니다. 단계가 올라가도 다루는
+        기능은 동일하며, 직접 제작하는 산출물의 양이 달라집니다.
+      </p>
+
+      <div class="grid grid--3 tiers">
+        {
+          TIERS.map((t) => (
+            <div class="card tier">
+              <p class="tier-id num">{t.id}</p>
+              <h3>{t.name}<span class="hours num">{t.hours}</span></h3>
+              <p class="small muted tier-desc">{t.desc}</p>
+              <p class:list={['open', `open--${t.openState}`]}>{t.open}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="rhythm-wrap">
+        <h3>회차마다 작동하는 결과물 하나가 남습니다</h3>
+        <p class="narrow">
+          모든 단계에서 회차당 3.5시간을 동일한 구성으로 운영합니다. 세종대학교 과정에서
+          검증된 형식이며, <strong>실습 데이터는 실제 업무 규모로 제공합니다.</strong>
+        </p>
+        <ol class="rhythm">
+          {
+            RHYTHM.map((r) => (
+              <li>
+                <span class="min num">{r.min}</span>
+                <strong>{r.what}</strong>
+                <span class="muted"> — {r.note}</span>
+              </li>
+            ))
+          }
+        </ol>
+        <p class="small muted narrow">
+          예: 통장 거래 3,842행 + 법인카드 181건 + 거래처 마스터 452건으로 구성한 결산 케이스,
+          공개데이터 기반 기업분석 케이스, 클라우드 데이터웨어하우스 연동 실습.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 자료가 열리기 전까지 볼 수 있는 것 -->
+  <section class="section section--soft watch">
+    <div class="wrap">
+      <div class="watch-inner">
+        <div>
+          <p class="eyebrow">지금 볼 수 있는 것</p>
+          <h2 class="lead-h">유튜브 「{YOUTUBE.name}」</h2>
+          <p class="lede">
+            커리큘럼 자료가 열리기 전이라도, 실무에 어떻게 적용되는지는 지금 보실 수
+            있습니다. <strong>결산 전표 자동화·회계기준 검토·리서치 자동화</strong>를
+            실제로 돌려 보이는 시연 영상입니다.
+          </p>
+          <p class="small muted">
+            커리큘럼의 처리(P)·검증(V)·리서치(R) 기능이 실제 업무에서 어떤 모습인지
+            보여 주는 자리입니다. Kernel Academy가 운영합니다.
+          </p>
+          <p class="watch-cta">
+            <a class="btn" href={YOUTUBE.url} rel="noopener">채널 보기</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ② 어디서 쓰이고 있나 -->
+  <section class="section">
+    <div class="wrap">
+      <TeachingNews />
+    </div>
+  </section>
+
+  <section class="section next-up">
+    <div class="prose">
+      <h2 class="lead-h">이어서 볼 것</h2>
+      <div class="grid grid--2">
+        <a class="card nextcard" href="/program/blocks">
+          <p class="eyebrow">기능별 훈련</p>
+          <p class="nc-t">일을 무엇으로 쪼개는가</p>
+          <p class="small muted">
+            여섯 기능마다 AI의 몫과 사람의 몫을 구분해 규정합니다. 이 구분이 본 커리큘럼의
+            핵심 설계입니다.
+          </p>
+        </a>
+        <a class="card nextcard" href="/program/workflows">
+          <p class="eyebrow">워크플로우</p>
+          <p class="nc-t">내 업무에서는 이렇게 조립한다</p>
+          <p class="small muted">
+            세무·결산·자금 등 일곱 업무 단위의 조립 순서와, 기능 × 업무 전체 지도.
+          </p>
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .pagehead { padding-bottom: clamp(2.25rem, 4vw, 3.25rem); }
+  .pagehead .lede { margin-bottom: 0; }
+  .lead-h { margin-top: 0; }
+  .narrow { max-width: 40rem; }
+
+  .tiers { margin-top: 2.25rem; }
+  .tier-id {
+    font-family: var(--sans);
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--ink-3);
+    margin: 0 0 0.45rem;
+  }
+  .tier h3 { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.5rem; }
+  .hours {
+    font-family: var(--sans);
+    font-size: 0.83rem;
+    font-weight: 500;
+    color: var(--ink-2);
+    margin-left: auto;
+  }
+  .tier { display: flex; flex-direction: column; }
+  .tier-desc { flex: 1; }
+  /* 공개 시점 — 준비중이 많은 사이트에서 이 한 줄이 방치와 진행을 가른다 */
+  .open {
+    margin: 1rem 0 0;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--ink-3);
+  }
+  .open--soon { color: var(--brand); }
+
+  .rhythm-wrap { margin-top: 3.5rem; }
+  .rhythm-wrap h3 { margin-top: 0; }
+  .rhythm { list-style: none; margin: 1.3rem 0; padding: 0; max-width: 40rem; }
+  .rhythm li {
+    display: flex;
+    gap: 0.9rem;
+    align-items: baseline;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .min { flex: none; width: 3.2rem; color: var(--ink-3); font-size: 0.88rem; font-weight: 600; }
+
+  /* 자료가 열리기 전까지의 자리 — 9월이면 학습 경로가 이 위로 올라온다 */
+  .watch-inner { max-width: 44rem; }
+  .watch .lead-h { margin-bottom: 0.7rem; }
+  .watch-cta { margin: 1.6rem 0 0; }
+
+  .next-up .grid { margin-top: 1.75rem; }
+  .nextcard { text-decoration: none; color: inherit; transition: border-color 0.12s; display: block; }
+  .nextcard:hover { border-color: var(--ink-3); }
+  .nextcard .eyebrow { margin-bottom: 0.5rem; color: var(--brand); }
+  .nc-t { font-size: 1.15rem; font-weight: 600; margin: 0 0 0.5rem; }
+</style>

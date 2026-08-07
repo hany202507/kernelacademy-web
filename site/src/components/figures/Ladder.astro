@@ -1,0 +1,69 @@
+---
+// 재무 AI 교육의 사다리 — 어디까지 올라가 있나
+const STEPS = [
+  { n: '①', t: '프롬프트', s: '재무 특화 프롬프트 작성' },
+  { n: '②', t: '분석·보고', s: '재무분석, 경영진 커멘터리' },
+  { n: '③', t: '에이전트', s: '커스텀 GPT, 재사용 어시스턴트' },
+  { n: '④', t: '워크플로 자동화', s: '엔드투엔드 파이프라인' },
+  { n: '⑤', t: '조직 적용', s: '재무 기능 재설계' },
+];
+const REACH = [
+  { label: '무료 리터러시 과정', to: 1 },
+  { label: '단품 비디오 과정', to: 2 },
+  { label: '상위 코호트 과정', to: 4 },
+  { label: '협회·대학 프로그램', to: 5 },
+];
+
+const W = 640;
+const SW = 112; // 단계 폭
+const SG = 20;
+const baseY = 96;
+const stepH = 62;
+const total = baseY + stepH + 34 + REACH.length * 26 + 10;
+---
+
+<svg viewBox={`0 0 ${W} ${total}`} role="img" aria-labelledby="ld-t">
+  <title id="ld-t">
+    재무 AI 교육의 다섯 단계 사다리와, 과정 유형별로 어디까지 도달하는지.
+  </title>
+
+  <text x="0" y="12" font-size="11" font-weight="600" letter-spacing="0.1em" class="t-faint">
+    무엇을 할 줄 알게 되는가
+  </text>
+
+  {
+    STEPS.map((s, i) => {
+      const x = i * (SW + SG);
+      const y = baseY - i * 9;
+      return (
+        <g>
+          <rect x={x} y={y} width={SW} height={stepH} class="f-soft s-line" />
+          <text x={x + 12} y={y + 20} font-size="12" class="t-faint">{s.n}</text>
+          <text x={x + 12} y={y + 38} font-size="13" font-weight="600">{s.t}</text>
+          <text x={x + 12} y={y + 53} font-size="10.5" class="t-faint">{s.s}</text>
+          {i < STEPS.length - 1 && (
+            <path
+              d={`M ${x + SW + 4} ${y + stepH / 2} l 10 0 m -4 -4 l 4 4 l -4 4`}
+              class="f-none s-mute"
+              stroke-width="1.2"
+            />
+          )}
+        </g>
+      );
+    })
+  }
+
+  {
+    REACH.map((r, i) => {
+      const y = baseY + stepH + 34 + i * 26;
+      const endX = r.to * (SW + SG) - SG;
+      return (
+        <g>
+          <line x1="0" y1={y} x2={endX} y2={y} class="s-ink" stroke-width="2" opacity={0.25 + i * 0.2} />
+          <circle cx={endX} cy={y} r="3.2" fill="var(--ink)" opacity={0.3 + i * 0.2} />
+          <text x={endX + 11} y={y + 4} font-size="11.5" class="t-mute">{r.label}</text>
+        </g>
+      );
+    })
+  }
+</svg>

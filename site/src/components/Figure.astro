@@ -1,0 +1,68 @@
+---
+/**
+ * 본문 도해 래퍼.
+ *
+ * 사진 대신 도해를 쓴다 — 이 글들이 다루는 것이 구조와 순서라서, 스톡 사진보다
+ * 그림이 실제로 설명을 한다. 전부 인라인 SVG 라 이미지 파일이 0개로 유지되고
+ * 어느 화면에서도 깨지지 않는다.
+ */
+interface Props {
+  caption: string;
+  /** 도해가 넓어야 읽히는 경우 본문 폭을 넘겨 배치한다. */
+  bleed?: boolean;
+  label?: string;
+}
+const { caption, bleed = false, label } = Astro.props;
+---
+
+<figure class:list={['fig', { 'fig--bleed': bleed }]}>
+  <div class="fig-frame">
+    <slot />
+  </div>
+  <figcaption>
+    {label && <span class="fig-label">{label}</span>}
+    {caption}
+  </figcaption>
+</figure>
+
+<style>
+  .fig { margin: 2.75rem 0; }
+  @media (min-width: 58rem) {
+    .fig--bleed { width: 52rem; margin-inline: calc((42rem - 52rem) / 2); }
+  }
+
+  .fig-frame {
+    position: relative; /* 안의 <title>·sr-only 가 스크롤 영역을 빠져나가지 않게 */
+    border: 1px solid var(--line);
+    background: var(--bg);
+    padding: 1.6rem 1.5rem;
+    overflow-x: auto;
+  }
+  .fig-frame :global(svg) { display: block; width: 100%; height: auto; }
+
+  /* 도해 안의 글자 — UI 서체로 통일하고 크기를 고정한다 */
+  .fig-frame :global(text) { font-family: var(--sans); fill: var(--ink); }
+  .fig-frame :global(.t-mute) { fill: var(--ink-2); }
+  .fig-frame :global(.t-faint) { fill: var(--ink-3); }
+  .fig-frame :global(.s-line) { stroke: var(--line); }
+  .fig-frame :global(.s-ink) { stroke: var(--ink); }
+  .fig-frame :global(.s-mute) { stroke: var(--ink-3); }
+  .fig-frame :global(.f-soft) { fill: var(--bg-soft); }
+  .fig-frame :global(.f-deep) { fill: var(--bg-deep); }
+  .fig-frame :global(.f-none) { fill: none; }
+
+  figcaption {
+    margin-top: 0.85rem;
+    font-family: var(--sans);
+    font-size: 0.83rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    text-wrap: pretty;
+  }
+  .fig-label {
+    font-weight: 600;
+    color: var(--ink);
+    margin-right: 0.45em;
+    letter-spacing: 0.02em;
+  }
+</style>

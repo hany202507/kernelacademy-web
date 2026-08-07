@@ -1,0 +1,248 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import BlockBadge from '../../components/BlockBadge.astro';
+import RoleSplit from '../../components/RoleSplit.astro';
+import Disclaimer from '../../components/Disclaimer.astro';
+import { definition, roleSplit } from '../../lib/canon';
+import { DOMAINS, LADDER } from '../../data/program';
+import { SITE, EMPHASIZED_BLOCKS } from '../../data/site';
+
+const blocks = (await getCollection('blocks')).sort((a, b) => a.data.order - b.data.order);
+
+// 본문은 canon 에서 온다. 여기서 다시 쓰지 않는다.
+const cards = blocks.map((b) => ({
+  ...b.data,
+  def: definition(b.body ?? ''),
+  roles: roleSplit(b.body ?? ''),
+  emphasized: EMPHASIZED_BLOCKS.includes(b.data.id as any),
+}));
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Course',
+  name: `${SITE.curriculum} 기능별 훈련`,
+  description: '재무 업무를 여섯 개의 기능으로 분해하고, 기능마다 AI와 사람의 몫을 가릅니다.',
+  provider: { '@type': 'Organization', name: SITE.name, url: SITE.url },
+  isAccessibleForFree: true,
+  inLanguage: 'ko',
+  teaches: DOMAINS.map((d) => d.name),
+};
+---
+
+<Base
+  title="기능별 훈련"
+  description="재무 업무를 여섯 개의 기능(리서치·연동·처리·판단·검증·산출)으로 쪼개고, 기능마다 AI가 하는 일과 사람이 하는 일을 갈라 둡니다."
+  schema={schema}
+>
+  <section class="section section--tint pagehead">
+    <div class="prose">
+      <p class="eyebrow">기능별 훈련</p>
+      <h1>일을 무엇으로 쪼개는가</h1>
+      <p class="lede">
+        재무 업무를 여섯 기능으로 분해합니다. 기능마다 <strong>AI의 몫과 사람의 몫</strong>을
+        구분해 규정하는 것이 본 커리큘럼의 핵심 설계입니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- ① 6개 기능 -->
+  <section class="section" id="blocks">
+    <div class="wrap">
+      <div class="blocks">
+        {
+          cards.map((b) => (
+            <article class:list={['block', { 'block--em': b.emphasized }]} id={`block-${b.id}`}>
+              <header class="block-head">
+                <BlockBadge id={b.id} label={b.title} size="lg" />
+                {b.emphasized && <span class="em-tag">사람이 서명하는 칸</span>}
+              </header>
+              <p class="block-def">{b.def}</p>
+              {b.roles && <RoleSplit ai={b.roles.ai} human={b.roles.human} emphasize={b.emphasized} />}
+              <p class="block-meta small muted">
+                <span class="state">{b.공개여부}</span>
+                <time datetime={b.updated.toISOString().slice(0, 10)} class="num">
+                  updated {b.updated.toISOString().slice(0, 10)}
+                </time>
+              </p>
+            </article>
+          ))
+        }
+      </div>
+      <p class="small muted note">
+        <strong>J(판단)와 V(검증)에 비중을 더 둡니다.</strong> J는 AI에 위임할 수 없는 기능이며,
+        V는 산출물에 책임을 확정하는 기능입니다. 해외 재무 AI 교육과정에서 공통으로 부재한
+        영역이 V입니다. → <a href="/insights/three-empty-cells">조사 자료</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ② 무엇을 할 줄 알게 되는가 -->
+  <section class="section section--soft">
+    <div class="prose-wide">
+      <h2 class="lead-h">무엇을 할 줄 알게 되는가</h2>
+      <p class="lede">
+        여섯 기능은 <strong>교육의 단위</strong>이며, 아래 여섯 역량은
+        <strong>수료 시점의 도달 수준</strong>입니다. 동일한 커리큘럼을 다른 축으로 기술한
+        것이므로 어느 쪽으로 읽어도 무방합니다.
+      </p>
+
+      <div class="table-wrap">
+        <table class="map">
+          <thead>
+            <tr>
+              <th scope="col">역량</th>
+              <th scope="col">무엇을 할 줄 알게 되는가</th>
+              <th scope="col">어디서 배우는가</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              DOMAINS.map((d) => (
+                <tr class:list={{ gap: d.gap }}>
+                  <th scope="row">
+                    <span class="did num">{d.id}</span> {d.name}
+                  </th>
+                  <td class="small">{d.desc}</td>
+                  <td class="small">
+                    {d.gap ? (
+                      <>
+                        <span class="gap-mark">정본 없음</span>
+                        <a href={d.href!}>임시로 블로그가 메웁니다 →</a>
+                      </>
+                    ) : d.href ? (
+                      <a href={d.href}>{d.maps}</a>
+                    ) : (
+                      d.maps
+                    )}
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <Disclaimer title="비어 있는 칸을 숨기지 않습니다">
+        <p>
+          <strong>D2(시장·전략 배경)와 D6(확산·조직 적용)에는 아직 정본 문서가 없습니다.</strong>
+          지금은 <a href="/insights">블로그</a> 글이 그 자리를 메우고 있습니다 —
+          트렌드 글이 D2를, 현장 사례가 D6를 담당합니다.
+        </p>
+        <p>이 두 칸을 어떻게 채울지가 <strong>교육위원 커리큘럼 리뷰의 실제 안건</strong>입니다.</p>
+      </Disclaimer>
+    </div>
+  </section>
+
+  <!-- ③ 난이도 사다리 -->
+  <section class="section">
+    <div class="prose-wide">
+      <h2 class="lead-h">어디까지 올라가는가</h2>
+      <p class="lede">
+        수강생의 현재 수준에서 시작하도록 설계했습니다. 상위 단계를 축소하는 방식이 아니라
+        <strong>해당 수준까지 도달하는 경로를 구성하는 방식</strong>을 취합니다.
+      </p>
+      <ol class="ladder">
+        {
+          LADDER.map((l) => (
+            <li class="rung">
+              <span class="rung-n num" aria-hidden="true">{l.n}</span>
+              <div>
+                <p class="rung-t">{l.title}</p>
+                <p class="small muted">
+                  {l.desc}
+                  {l.note && <span class="rung-note"> · {l.note}</span>}
+                </p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+
+      <p class="next">
+        <a href="/program/workflows">기능을 업무 워크플로로 조립하기 →</a>
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .pagehead { padding-bottom: clamp(2.25rem, 4vw, 3.25rem); }
+  .pagehead .lede { margin-bottom: 0; }
+  .lead-h { margin-top: 0; }
+
+  .blocks { display: grid; gap: 1.1rem; }
+  @media (min-width: 52rem) { .blocks { grid-template-columns: 1fr 1fr; } }
+  .block {
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 1.4rem 1.5rem;
+    background: var(--bg);
+    scroll-margin-top: 11rem;
+  }
+  .block--em { border-color: var(--ink-3); background: var(--bg-soft); }
+  .block-head { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+  .em-tag {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--ink-2);
+    border: 1px solid var(--ink-3);
+    border-radius: 999px;
+    padding: 0.14em 0.6em;
+    margin-left: auto;
+  }
+  .block-def { margin: 0; font-size: 0.96rem; line-height: 1.7; color: var(--ink-2); }
+  .block-meta {
+    display: flex;
+    gap: 0.9rem;
+    margin: 0.9rem 0 0;
+    padding-top: 0.7rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--sans);
+  }
+  .state { font-weight: 600; color: var(--ink-2); }
+  .note { margin-top: 1.75rem; max-width: 44rem; }
+
+  .map th[scope='row'] { white-space: nowrap; font-weight: 600; color: var(--ink); }
+  .did { color: var(--ink-3); font-size: 0.8rem; margin-right: 0.15rem; }
+  .map tr.gap { background: color-mix(in srgb, var(--b-P) 5%, var(--bg)); }
+  .gap-mark {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--b-P);
+    background: color-mix(in srgb, var(--b-P) 12%, var(--bg));
+    border-radius: 3px;
+    padding: 0.1em 0.45em;
+    margin-right: 0.5em;
+  }
+
+  .ladder { list-style: none; margin: 1.5rem 0 0; padding: 0; }
+  .rung {
+    display: flex;
+    gap: 0.95rem;
+    align-items: baseline;
+    padding: 0.9rem 0;
+    border-top: 1px solid var(--line);
+  }
+  .rung:last-child { border-bottom: 1px solid var(--line); }
+  .rung-n {
+    flex: none;
+    width: 1.9rem;
+    height: 1.9rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--ink-2);
+    align-self: start;
+  }
+  .rung > div > p { margin: 0; }
+  .rung-t { font-weight: 600; }
+  .rung-note { color: var(--ink-3); }
+
+  .next { margin-top: 2.75rem; font-weight: 600; }
+</style>

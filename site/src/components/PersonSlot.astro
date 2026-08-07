@@ -1,0 +1,62 @@
+---
+/**
+ * 인물 슬롯 — 자리만 만들고 실물은 동의받은 것만 올린다.
+ *
+ * 사진이 없으면 이니셜 모노그램. 실루엣을 쓰지 않는 이유는,
+ * 실루엣은 "사람이 있는데 가렸다"로 읽히고 모노그램은 "아직 없다"를 정직하게 말하기 때문이다.
+ * 🔴 실존 인물의 초상을 생성 이미지로 만들지 않는다 — 사진은 본인이 제공하는 것이다.
+ */
+interface Props {
+  name: string;
+  affiliation?: string;
+  note?: string;
+  /** 동의받은 사진이 생기면 여기에 경로만 넣으면 된다. 레이아웃은 안 흔들린다. */
+  photo?: string;
+  size?: 'sm' | 'md';
+}
+const { name, affiliation, note, photo, size = 'md' } = Astro.props;
+const initial = name.replace(/[^가-힣A-Za-z]/g, '').slice(0, 2) || '·';
+---
+
+<div class:list={['person', `person--${size}`]}>
+  <div class="slot">
+    {
+      photo ? (
+        <img src={photo} alt={`${name} 사진`} width="72" height="72" loading="lazy" />
+      ) : (
+        <span class="mono" aria-hidden="true">{initial}</span>
+      )
+    }
+  </div>
+  <div class="meta">
+    <p class="name">{name}</p>
+    {affiliation && <p class="affil small">{affiliation}</p>}
+    {note && <p class="note small muted">{note}</p>}
+  </div>
+</div>
+
+<style>
+  .person { display: flex; align-items: center; gap: 0.85rem; }
+  .slot {
+    flex: none;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;          /* 고정 종횡비 — 사진이 들어와도 레이아웃이 흔들리지 않는다 */
+    border-radius: 50%;
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .slot img { width: 100%; height: 100%; object-fit: cover; }
+  .mono { font-weight: 600; color: var(--ink-3); letter-spacing: -0.02em; }
+
+  .person--md .slot { width: 3.4rem; }
+  .person--md .mono { font-size: 1rem; }
+  .person--sm .slot { width: 2.5rem; }
+  .person--sm .mono { font-size: 0.8rem; }
+
+  .meta > * { margin: 0; }
+  .name { font-weight: 600; line-height: 1.4; }
+  .affil { color: var(--ink-2); }
+  .note { margin-top: 0.15rem; }
+</style>

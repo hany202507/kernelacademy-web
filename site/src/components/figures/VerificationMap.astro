@@ -1,0 +1,66 @@
+---
+// 회계사가 이미 매일 하는 절차 → AI 산출물에 그대로 적용
+const ROWS = [
+  { m: '양방향 대사', a: '합계·건수를 원본↔산출물 양방향 대조', to: 'AI가 만든 집계표' },
+  { m: 'tie-out', a: '재무제표↔시산표↔원장 연결 일치', to: 'AI가 만든 재무제표 초안' },
+  { m: '독립 재계산', a: '같은 값을 다른 경로로 재산출', to: 'AI가 계산한 세액·상각' },
+  { m: '골든셋 채점', a: '확정 전기 결과를 정답표로 채점', to: 'AI 분개 초안' },
+  { m: '분석적 검토', a: '전기 대비·비율·추세로 이상 탐지', to: 'AI 결산 산출물' },
+  { m: '근거 원문 확인', a: '인용 조문·기준의 원문 대조', to: 'AI가 인용한 법령' },
+];
+
+const W = 640;
+const H = 34;
+const G = 7;
+const top = 46;
+const MX = 150;
+const AX = 166;
+const AW = 250;
+const TX = 432;
+const total = top + ROWS.length * (H + G) + 12;
+---
+
+<svg viewBox={`0 0 ${W} ${total}`} role="img" aria-labelledby="vm-t">
+  <title id="vm-t">
+    회계 검증 절차 여섯 가지와, 각각이 어떤 AI 산출물에 적용되는지의 대응표.
+  </title>
+
+  <text x="0" y="12" font-size="11" font-weight="600" letter-spacing="0.1em" class="t-faint">
+    이미 하고 있는 절차
+  </text>
+  <text x={AX} y="12" font-size="11" font-weight="600" letter-spacing="0.1em" class="t-faint">
+    무엇을 하는가
+  </text>
+  <text x={TX} y="12" font-size="11" font-weight="600" letter-spacing="0.1em" fill="var(--b-V)">
+    어디에 적용하나
+  </text>
+  <line x1="0" y1="24" x2={W} y2="24" class="s-line" />
+
+  {
+    ROWS.map((r, i) => {
+      const y = top + i * (H + G);
+      return (
+        <g>
+          <text x={MX} y={y + 21} font-size="12.5" font-weight="600" text-anchor="end">{r.m}</text>
+          <text x={AX} y={y + 21} font-size="11.5" class="t-mute">{r.a}</text>
+          <path
+            d={`M ${TX - 18} ${y + 17} l 11 0 m -4.5 -4 l 4.5 4 l -4.5 4`}
+            class="f-none"
+            stroke="var(--b-V)"
+            stroke-width="1.2"
+            opacity="0.7"
+          />
+          <rect
+            x={TX}
+            y={y + 2}
+            width={W - TX}
+            height={H - 4}
+            fill="var(--b-V)"
+            opacity="0.07"
+          />
+          <text x={TX + 10} y={y + 21} font-size="11.5" fill="var(--b-V)">{r.to}</text>
+        </g>
+      );
+    })
+  }
+</svg>

@@ -1,0 +1,51 @@
+---
+// AI 가 하는 일 / 사람이 하는 일 — 이 2열이 이 과정의 서명이다.
+// 내용은 canon 의 「역할 분담」 절에서 그대로 온다. 여기서 다시 쓰지 않는다.
+interface Props {
+  ai: string;
+  human: string;
+  emphasize?: boolean;
+}
+const { ai, human, emphasize = false } = Astro.props;
+---
+
+<div class:list={['split', { 'split--em': emphasize }]}>
+  <div class="col col--ai">
+    <p class="who">AI 가 하는 일</p>
+    <p class="what">{ai}</p>
+  </div>
+  <div class="col col--human">
+    <p class="who">사람이 하는 일</p>
+    <p class="what">{human}</p>
+  </div>
+</div>
+
+<style>
+  .split {
+    display: grid;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    overflow: hidden;
+    margin: 1.1rem 0 0;
+  }
+  @media (min-width: 34rem) { .split { grid-template-columns: 1fr 1fr; } }
+
+  .col { background: var(--bg); padding: 0.95rem 1.1rem; }
+  .col--human { background: var(--bg-soft); }
+
+  .who {
+    margin: 0 0 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--ink-3);
+  }
+  .col--human .who { color: var(--ink-2); }
+  .what { margin: 0; font-size: 0.94rem; line-height: 1.65; }
+
+  /* J·V — 사람 쪽에 무게를 더 준다. 이 두 칸이 다른 AI 교육과 갈리는 지점이다. */
+  .split--em .col--human { background: color-mix(in srgb, var(--ink) 4%, var(--bg)); }
+  .split--em .col--human .what { font-weight: 550; }
+</style>

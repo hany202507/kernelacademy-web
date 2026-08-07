@@ -1,0 +1,109 @@
+---
+/**
+ * 검토 반영 로그 — 권위 엔진의 심장.
+ * 지적을 그대로 싣는 것이 요점이다. 다듬으면 장치가 죽는다. (14번 §3-3)
+ *
+ * 위원이 아직 0명이라 지금은 예시다. 있는 척하지 않는 것이 원칙이라
+ * `example` 을 켜면 화면에 「예시입니다」가 명시된다.
+ */
+interface Entry {
+  date: string;
+  who: string;
+  affiliation?: string;
+  point: string;
+  applied: string;
+  link?: { label: string; href: string };
+}
+interface Props {
+  entries: Entry[];
+  example?: boolean;
+}
+const { entries, example = false } = Astro.props;
+---
+
+<div class="timeline">
+  {
+    example && (
+      <p class="ex-note">
+        <strong>아래는 예시입니다.</strong> 교육위원 위촉 전이라 실제 기록이 아직 없습니다.
+        위촉 후 이 자리에 실명과 지적이 그대로 쌓입니다.
+      </p>
+    )
+  }
+
+  <ol class:list={['list', { 'list--ex': example }]}>
+    {
+      entries.map((e) => (
+        <li class="entry">
+          <time class="date num" datetime={e.date}>{e.date}</time>
+          <div class="body">
+            <p class="who">
+              <strong>{e.who}</strong>
+              {e.affiliation && <span class="affil"> · {e.affiliation}</span>}
+            </p>
+            <p class="row">
+              <span class="tag tag--point">지적</span>
+              <span class="quote">“{e.point}”</span>
+            </p>
+            <p class="row">
+              <span class="tag tag--applied">반영</span>
+              <span>{e.applied}</span>
+            </p>
+            {e.link && (
+              <p class="row row--link">
+                <a href={e.link.href}>{e.link.label} →</a>
+              </p>
+            )}
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</div>
+
+<style>
+  .ex-note {
+    font-size: 0.9rem;
+    color: var(--ink-2);
+    background: var(--bg-soft);
+    border: 1px dashed var(--ink-3);
+    border-radius: 3px;
+    padding: 0.7rem 1rem;
+    margin: 0 0 1.2rem;
+  }
+
+  .list { list-style: none; margin: 0; padding: 0; }
+  .list--ex { opacity: 0.78; }
+
+  .entry {
+    display: grid;
+    gap: 0.15rem 1.1rem;
+    padding: 1.05rem 0;
+    border-top: 1px solid var(--line);
+    margin: 0;
+  }
+  .entry:last-child { border-bottom: 1px solid var(--line); }
+  @media (min-width: 40rem) { .entry { grid-template-columns: 6.5rem 1fr; } }
+
+  .date { color: var(--ink-3); font-size: 0.85rem; padding-top: 0.15rem; }
+  .body > * { margin: 0 0 0.3rem; }
+  .body > :last-child { margin-bottom: 0; }
+  .who { font-size: 0.95rem; }
+  .affil { color: var(--ink-2); font-weight: 400; }
+
+  .row { display: flex; gap: 0.6rem; font-size: 0.94rem; line-height: 1.65; }
+  .row--link { margin-top: 0.45rem; font-size: 0.9rem; }
+  .tag {
+    flex: none;
+    align-self: start;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.18em 0.5em;
+    border-radius: 4px;
+    line-height: 1.5;
+    margin-top: 0.15em;
+  }
+  .tag--point { background: color-mix(in srgb, var(--b-J) 11%, var(--bg)); color: var(--b-J); }
+  .tag--applied { background: color-mix(in srgb, var(--b-V) 11%, var(--bg)); color: var(--b-V); }
+  .quote { color: var(--ink-2); }
+</style>

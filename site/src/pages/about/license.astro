@@ -1,0 +1,212 @@
+---
+import Base from '../../layouts/Base.astro';
+import Disclaimer from '../../components/Disclaimer.astro';
+import { SITE, COMPANY } from '../../data/site';
+
+const 시행일 = '2026-08-07';
+
+const USES = [
+  {
+    use: '개인 학습·열람',
+    sub: '읽기 · 내려받아 혼자 공부하기',
+    approval: '불요',
+    cond: '없습니다. 등록도 표기도 요구하지 않습니다. (파일을 내려받으실 때의 가입은 이용 조건이 아니라 별개입니다)',
+    free: true,
+  },
+  {
+    use: '타인을 가르치는 데 사용',
+    sub: '대학 강의 · 사내 교육 · 학원 · 강연 · 영상 재편집',
+    approval: '사용 등록',
+    cond: '① 지정 형식으로 출처를 표기하고 ② 사용 사실을 소개 자료에 인용하는 데 동의해 주시면 됩니다.',
+    free: false,
+  },
+  {
+    use: '유료 판매 · 2차 저작물 배포',
+    approval: '개별 협의',
+    cond: '위 조건에 더해 범위를 협의합니다.',
+    free: false,
+  },
+];
+---
+
+<Base
+  title="자료 이용 조건"
+  description="혼자 배우시는 데에는 조건이 없습니다. 타인을 가르치는 데 쓰실 때만 사용 등록을 요청드립니다."
+>
+  <section class="section section--tint pagehead">
+    <div class="prose">
+      <p class="eyebrow">자료 이용 조건</p>
+      <h1>읽는 것은 자유롭게,<br />가르치는 것은 등록만</h1>
+      <p class="lede">
+        혼자 배우시는 데에는 어떤 조건도 걸지 않습니다.
+        <strong>타인을 가르치는 데 쓰실 때만</strong> 사용 등록을 요청드립니다.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="prose">
+      <h2 class="first">이용 유형별 조건</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">이용 유형</th>
+              <th scope="col">사전 승인</th>
+              <th scope="col">조건</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              USES.map((u) => (
+                <tr class:list={{ free: u.free }}>
+                  <th scope="row">
+                    {u.use}
+                    {u.sub && <span class="sub">{u.sub}</span>}
+                  </th>
+                  <td class="ap">{u.approval}</td>
+                  <td class="small">{u.cond}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <p>
+        <strong>읽는 데에는 어떤 장벽도 두지 않습니다.</strong> 로그인 없이 읽으실 수
+        있습니다. 검색과 인용으로 자료가 퍼지는 것이 이 프로그램의 전제이기 때문입니다.
+      </p>
+      <p>
+        위 표는 <strong>저작물을 어떻게 쓰실 수 있는가</strong>에 대한 것이고, 아래는
+        <strong>파일을 어떻게 받으시는가</strong>에 대한 것입니다. 둘은 별개입니다.
+      </p>
+      <ul class="layers">
+        <li><strong>읽기</strong> — 가입도 등록도 필요 없습니다</li>
+        <li>
+          <strong>내려받기</strong> — <a href="/join">가입</a>이 필요합니다.
+          자료가 갱신될 때 알려드리기 위한 것이며, 이용 조건과는 무관합니다
+        </li>
+        <li><strong>가르치는 데 사용</strong> — 위 표대로 사용 등록이 필요합니다</li>
+      </ul>
+
+      <Disclaimer title="크리에이티브 커먼즈(CC)가 아닙니다">
+        <p>
+          CC 라이선스는 <strong>사전 허락 없이 쓸 수 있고, 한 번 준 허락은 취소할 수 없다</strong>는
+          것을 전제로 설계된 체계입니다. 이 조건은 가르치는 용도에 등록 절차를 두므로
+          CC의 정의에 해당하지 않습니다.
+        </p>
+        <p>
+          편의상 CC 표기를 붙이면 취소 불가 조건에 스스로 묶이게 되므로,
+          <strong>CC 배지와 문구를 일절 사용하지 않습니다.</strong>
+        </p>
+      </Disclaimer>
+
+      <h2>사용 등록은 심사가 아닙니다</h2>
+      <p>
+        확산이 곧 이 프로그램의 목적이므로, 등록을 병목으로 두지 않습니다.
+        <strong>거절은 예외적인 경우에만</strong> 있으며 실질은 통보에 가깝게 운영합니다.
+      </p>
+      <ol class="steps">
+        <li>
+          <strong>알려 주십시오</strong> — 기관명, 과정명, 사용 기간, 담당자 연락처를
+          아래 메일로 보내 주시면 됩니다
+        </li>
+        <li><strong>영업일 2일 안에 회신</strong>드리고 등록번호를 발급합니다</li>
+        <li><strong>출처를 표기하고 사용</strong>하시면 됩니다</li>
+      </ol>
+      <p class="small muted">
+        전용 등록 폼은 준비 중입니다. 그때까지는 메일로 접수합니다.
+      </p>
+
+      <h2>출처 표기 형식</h2>
+      <p>자료 첫 장, 강의계획서, 영상 설명란 중 한 곳에 아래 문장을 넣어 주십시오.</p>
+      <blockquote class="cite">
+        본 자료는 <strong>Kernel Academy {SITE.curriculum} 커리큘럼</strong>({SITE.url.replace(
+          'https://',
+          ''
+        )})을 사용합니다. 사용 등록번호 KA-0000-0000.
+      </blockquote>
+      <p class="small muted">
+        등록번호는 회신 시 발급해 드립니다. 표기의 진위를 확인할 수 있게 하고,
+        등록 없이 쓰는 경우와 구별하기 위한 장치입니다.
+      </p>
+
+      <h2>동의 항목</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">항목</th><th scope="col">성격</th><th scope="col">동의</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">기관명·과정명·사용 기간</th>
+              <td class="small">기관 정보</td>
+              <td class="ap">필수</td>
+            </tr>
+            <tr>
+              <th scope="row">담당자 성명·사진·후기</th>
+              <td class="small">개인정보</td>
+              <td class="ap">선택</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        기관 단위 정보만 필수로 둡니다. 개인 신상은 별도로 동의해 주신 경우에만
+        소개 자료에 사용합니다.
+      </p>
+
+      <h2>저작권</h2>
+      <p>
+        커리큘럼·강의자료·실습 데이터의 저작권은 {COMPANY.name}에 있습니다.
+        위 조건에 따른 이용을 허락하는 것이며, 저작권을 포기하는 것은 아닙니다.
+        <strong>출처 표기 없이 사용하는 경우는 이 허락의 범위 밖입니다.</strong>
+      </p>
+
+      <div class="contact">
+        <h2>등록·문의</h2>
+        <p>
+          <a href={`mailto:${COMPANY.email}?subject=${encodeURIComponent('자료 사용 등록 신청')}`}>
+            {COMPANY.email}
+          </a>
+        </p>
+        <p class="small muted num">시행일 {시행일} · 변경 시 이 페이지에 공지합니다</p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .pagehead { padding-bottom: clamp(2.25rem, 4vw, 3.25rem); }
+  .pagehead .lede { margin-bottom: 0; }
+  .first { margin-top: 0; }
+
+  th[scope='row'] { white-space: normal; }
+  .sub {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--ink-3);
+    margin-top: 0.2rem;
+  }
+  .ap { white-space: nowrap; font-weight: 600; }
+  tr.free .ap { color: var(--brand); }
+
+  .layers { margin: 1.2rem 0 1.6rem; }
+  .layers li { margin-bottom: 0.5em; }
+
+  .steps { margin: 1.4rem 0; }
+  .steps li { margin-bottom: 0.55em; }
+
+  .cite {
+    font-style: normal;
+    font-size: 0.97rem;
+    border-left: 2px solid var(--brand);
+    background: var(--bg-soft);
+    padding: 1rem 1.3rem;
+    margin: 1.2rem 0 0.8rem;
+  }
+
+  .contact { margin-top: 3.5rem; padding-top: 1.5rem; border-top: 2px solid var(--ink); }
+  .contact h2 { margin-top: 0; }
+</style>

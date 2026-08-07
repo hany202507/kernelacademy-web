@@ -1,0 +1,93 @@
+---
+// DX → 연결 → AX. 건너뛰면 데모만 남는다.
+const W = 640;
+const BW = 176;
+const BG = 36;
+const y = 56;
+const BH = 92;
+const total = 268;
+
+const STAGES = [
+  { k: 'DX', t: '기록', d: '업무를 시스템에 태운다', ex: 'ERP·MES 도입' },
+  { k: '연결', t: '단일 기준', d: '흩어진 기록을 하나의 기준으로', ex: '데이터 웨어하우스·마트' },
+  { k: 'AX', t: '판단', d: '쌓인 데이터로 판단을 옮긴다', ex: '에이전트·자동화' },
+];
+---
+
+<svg viewBox={`0 0 ${W} ${total}`} role="img" aria-labelledby="dx-t">
+  <title id="dx-t">
+    DX(기록)에서 연결(단일 기준)을 거쳐 AX(판단)로 가는 순서. 가운데를 건너뛰면
+    시연은 성공하고 운영은 실패한다.
+  </title>
+
+  <text x="0" y="14" font-size="11" font-weight="600" letter-spacing="0.1em" class="t-faint">
+    순서
+  </text>
+
+  {
+    STAGES.map((s, i) => {
+      const x = i * (BW + BG);
+      const mid = i === 1;
+      return (
+        <g>
+          <rect
+            x={x}
+            y={y}
+            width={BW}
+            height={BH}
+            class={mid ? 'f-none' : 'f-soft s-line'}
+            stroke={mid ? 'var(--accent)' : undefined}
+            stroke-width={mid ? 1.6 : 1}
+          />
+          <text x={x + 16} y={y + 27} font-size="15" font-weight="600" fill={mid ? 'var(--accent)' : 'var(--ink)'}>
+            {s.k}
+          </text>
+          <text x={x + 16} y={y + 48} font-size="12.5" class="t-mute">{s.t}</text>
+          <text x={x + 16} y={y + 67} font-size="11" class="t-faint">{s.d}</text>
+          <text x={x + 16} y={y + 82} font-size="10.5" class="t-faint">{s.ex}</text>
+          {i < STAGES.length - 1 && (
+            <path
+              d={`M ${x + BW + 8} ${y + BH / 2} l 18 0 m -7 -6 l 7 6 l -7 6`}
+              class="f-none s-ink"
+              stroke-width="1.4"
+            />
+          )}
+        </g>
+      );
+    })
+  }
+
+  <g>
+    <path
+      d={`M ${BW / 2} ${y + BH + 26} C ${BW / 2} ${y + BH + 62}, ${2 * (BW + BG) + BW / 2} ${y + BH + 62}, ${2 * (BW + BG) + BW / 2} ${y + BH + 30}`}
+      class="f-none"
+      stroke="var(--b-J)"
+      stroke-width="1.3"
+      stroke-dasharray="5 4"
+    />
+    <path
+      d={`M ${2 * (BW + BG) + BW / 2} ${y + BH + 30} m -5 8 l 5 -8 l 5 8`}
+      class="f-none"
+      stroke="var(--b-J)"
+      stroke-width="1.3"
+    />
+    <rect x={BW + BG - 8} y={y + BH + 46} width={BW + 16} height="26" fill="var(--bg)" />
+    <text
+      x={BW + BG + BW / 2}
+      y={y + BH + 63}
+      font-size="12"
+      font-weight="600"
+      text-anchor="middle"
+      fill="var(--b-J)"
+    >
+      건너뛰면
+    </text>
+  </g>
+
+  <text x="0" y={total - 26} font-size="12.5" font-weight="600">
+    PoC 는 성공하고 운영은 실패합니다
+  </text>
+  <text x="0" y={total - 8} font-size="11.5" class="t-mute">
+    데이터가 없어서가 아니라, 다섯 개의 진실 중 무엇을 읽을지 정해지지 않았기 때문입니다.
+  </text>
+</svg>

@@ -1,0 +1,213 @@
+---
+import Base from '../../layouts/Base.astro';
+import { SITE, COMPANY, YOUTUBE } from '../../data/site';
+
+/**
+ * 질문형 소제목 + 단답 + 근거.
+ *
+ * 회계사가 챗봇에 묻는 형태와 사이트의 문장 구조를 맞추기 위한 지면이다.
+ * 답할 수 없는 것은 답할 수 없다고 쓴다 — 여기서 과장하면 사이트 전체가 깎인다.
+ */
+const GROUPS = [
+  {
+    title: '무료와 범위',
+    items: [
+      {
+        q: '정말 전부 무료입니까?',
+        a: '커리큘럼·강의자료·실습 데이터는 전부 무료입니다. 오프라인 과정에는 참가비가 있습니다.',
+        more:
+          '한 사람이 더 읽는다고 비용이 늘지 않는 것은 무료로 둡니다. 강사·좌석·조교가 실제로 투입되는 자리에만 참가비를 받습니다.',
+      },
+      {
+        q: '지금 볼 수 있는 것이 있습니까?',
+        a: '유튜브 「AI CFO Lab」에 실무 시연 영상이 공개되어 있습니다. 커리큘럼 자료는 리터러시 12시간이 2026년 9월, 실무 24시간이 10월에 공개됩니다.',
+        more:
+          '영상에서는 결산 전표 자동화, 회계기준 검토, 리서치 자동화를 실제로 돌려 보입니다. 커리큘럼 본문은 교육위원 검토를 거친 뒤 공개합니다 — 검토 이전에 공개하면 위원회를 두는 취지에 반하기 때문입니다.',
+        href: YOUTUBE.url,
+        hrefLabel: '유튜브 「AI CFO Lab」',
+      },
+      {
+        q: '회원가입이나 이메일 등록이 필요합니까?',
+        a: '웹에서 읽는 데에는 필요하지 않습니다. 강의자료·실습 데이터를 내려받으실 때만 가입이 필요합니다.',
+        more:
+          '읽는 것에 벽을 두지 않는 이유는 검색과 인용으로 자료가 퍼지는 것이 이 프로그램의 전제이기 때문입니다. 파일에만 가입을 두면 그 확산을 막지 않으면서, 실제로 실습하실 분께 자료 갱신을 알려드릴 수 있습니다.',
+        href: '/join',
+        hrefLabel: '가입 안내',
+      },
+    ],
+  },
+  {
+    title: '수강 대상과 조건',
+    items: [
+      {
+        q: '특정 제품이나 유료 도구를 구입해야 합니까?',
+        a: '1단계 과정은 특정 제품을 필요로 하지 않습니다.',
+        more:
+          '교재에 어느 구간이 제품 없이 되는지 명시합니다. 제품의 필요성을 드러내기 위해 일부러 어렵게 남겨 두는 구간은 두지 않습니다. 다만 상위 단계에서 코드 기반 도구를 다룰 때는 해당 도구의 요금제가 필요할 수 있으며, 그 경우 사전에 표기합니다.',
+      },
+      {
+        q: '공인회계사가 아니어도 수강할 수 있습니까?',
+        a: '가능합니다. 기업 재무팀·세무사무소 실무자를 함께 대상으로 합니다.',
+        more:
+          '난이도는 회계사 기준으로 설계했습니다. 가장 높은 수준에서 만들어 두면 아래로는 사례 교체 수준으로 내려갈 수 있다고 보기 때문입니다.',
+      },
+      {
+        q: '개발 지식이 필요합니까?',
+        a: '1·2단계는 필요하지 않습니다. 3단계부터 코드 기반 도구를 다룹니다.',
+        more:
+          '난이도 사다리를 챗봇 활용 → 로컬 파일 편집 → 코드 기반 에이전트 → 자동 검증 순으로 두었습니다. 상위 단계를 없애지 않고 거기까지 도달하는 경로를 만드는 방식입니다.',
+      },
+    ],
+  },
+  {
+    title: '자료 사용',
+    items: [
+      {
+        q: '자료를 제 강의나 사내 교육에 사용해도 됩니까?',
+        a: '사용하실 수 있습니다. 다만 사용 등록을 해 주셔야 합니다.',
+        more:
+          '개인 학습·열람·다운로드는 등록 없이 자유롭습니다. 타인을 가르치는 데 쓰실 때만 등록을 요청드리며, 심사가 아니라 등록입니다. 조건은 자료 이용 조건 페이지에 있습니다.',
+        href: '/about/license',
+        hrefLabel: '자료 이용 조건',
+      },
+      {
+        q: '실습 데이터는 어떤 것입니까?',
+        a: '가상 회사 한 곳의 원장·은행 거래·결제 정산·급여·세금계산서가 서로 맞물리는 세트입니다.',
+        more:
+          '재무 담당자는 회사 자료로 AI를 연습할 수 없습니다. 고객사 자료라면 더욱 그렇습니다. 그래서 실제 업무 규모의 가상 데이터셋을 직접 구축해 함께 공개합니다. 세종대 과정에서는 통장 거래 3,842행, 법인카드 181건, 거래처 마스터 452건 규모로 제공했습니다.',
+      },
+      {
+        q: '회사 자료를 AI에 넣어도 됩니까?',
+        a: '무엇을 넣어도 되는지 판단하는 기준을 커리큘럼에서 다룹니다. 일반적인 답을 대신 드리지는 않습니다.',
+        more:
+          '보안·거버넌스 경계를 별도 윤리 강의로 분리하지 않고 모든 실습의 산출 직후에 배치했습니다. 국내외 유사 과정 조사에서 거버넌스가 대부분 별도 강의로 분리되어 있었고, 정작 데이터를 붙여넣는 실습 화면에서는 다뤄지지 않았기 때문입니다.',
+      },
+    ],
+  },
+  {
+    title: '수료와 운영',
+    items: [
+      {
+        q: '수료증을 발급합니까?',
+        a: '발급을 준비하고 있으며, 시점과 형식은 확정되지 않았습니다.',
+        more:
+          '민간자격 등록증 발급 절차가 진행 중이므로 그 전까지는 발급물의 명칭과 범위를 단정하지 않습니다. 확정되는 대로 이 페이지에 반영합니다.',
+      },
+      {
+        q: '누가 만들고 누가 검증합니까?',
+        a: '설계는 공인회계사 박상정이, 검증은 별도의 교육위원회가 맡습니다.',
+        more:
+          '설계자가 스스로 검증하는 체계는 검증으로 성립하지 않습니다. 위원께는 자문 의견이 아니라 커리큘럼 구간을 실제로 삭제할 수 있는 권한을 부여합니다.',
+        href: '/about/committee',
+        hrefLabel: '교육위원회',
+      },
+      {
+        q: '내용이 낡으면 어떻게 합니까?',
+        a: '각 문서에 최종 갱신일을 표시하고, 변경 사항은 블로그에 정리합니다.',
+        more:
+          '이 분야는 반기 단위로 도구와 방법론이 바뀝니다. 조사 자료에는 출처와 조사일을 병기해 어느 시점 기준의 정보인지 확인하실 수 있게 합니다.',
+        href: '/insights',
+        hrefLabel: '블로그',
+      },
+    ],
+  },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: GROUPS.flatMap((g) =>
+    g.items.map((it) => ({
+      '@type': 'Question',
+      name: it.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: it.more ? `${it.a} ${it.more}` : it.a,
+      },
+    }))
+  ),
+};
+---
+
+<Base
+  title="자주 묻는 질문"
+  description="무료 범위, 수강 대상, 자료 사용 조건, 수료와 운영에 대해 자주 받는 질문과 답변."
+  schema={schema}
+>
+  <section class="section section--tint pagehead">
+    <div class="prose">
+      <p class="eyebrow">자주 묻는 질문</p>
+      <h1>자주 받는 질문에 먼저 답합니다</h1>
+      <p class="lede">
+        답할 수 없는 것은 답할 수 없다고 적었습니다. 확정되지 않은 사항을 확정된 것처럼
+        쓰지 않습니다.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="prose">
+      {
+        GROUPS.map((g) => (
+          <div class="group">
+            <h2>{g.title}</h2>
+            <dl class="qa">
+              {g.items.map((it) => (
+                <>
+                  <dt>{it.q}</dt>
+                  <dd>
+                    <p class="answer">{it.a}</p>
+                    {it.more && <p class="more">{it.more}</p>}
+                    {it.href && (
+                      <p class="more link">
+                        <a href={it.href} rel={it.href.startsWith('http') ? 'noopener' : undefined}>
+                          {it.hrefLabel} →
+                        </a>
+                      </p>
+                    )}
+                  </dd>
+                </>
+              ))}
+            </dl>
+          </div>
+        ))
+      }
+
+      <div class="contact">
+        <h2>여기에 없는 질문</h2>
+        <p>
+          <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>로 보내 주시면 답변드리고,
+          반복되는 질문은 이 페이지에 추가합니다.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .pagehead { padding-bottom: clamp(2.25rem, 4vw, 3.25rem); }
+  .pagehead .lede { margin-bottom: 0; }
+
+  .group + .group { margin-top: 3.5rem; }
+  .group h2 { margin-top: 0; }
+  .group:not(:first-child) h2 { margin-top: 0; }
+
+  .qa { margin: 1.5rem 0 0; }
+  .qa dt {
+    font-size: 1.06rem;
+    font-weight: 600;
+    line-height: 1.6;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    margin-bottom: 0.6rem;
+  }
+  .qa dd { margin: 0 0 0.4rem; }
+  /* 단답을 먼저, 근거를 그다음에 — 훑어도 답이 읽히게 */
+  .answer { margin: 0 0 0.6rem; font-weight: 500; }
+  .more { margin: 0 0 0.5rem; font-size: 0.95rem; color: var(--ink-2); }
+  .more:last-child { margin-bottom: 0; }
+  .link { font-family: var(--sans); font-size: 0.9rem; }
+
+  .contact { margin-top: 3.5rem; padding-top: 1.5rem; border-top: 2px solid var(--ink); }
+  .contact h2 { margin-top: 0; }
+</style>

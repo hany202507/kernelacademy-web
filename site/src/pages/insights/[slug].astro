@@ -1,0 +1,135 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PhaseTimeline from '../../components/PhaseTimeline.astro';
+import PostCover from '../../components/PostCover.astro';
+import { SITE } from '../../data/site';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const posts = await getCollection('insights');
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+};
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const d = post.data;
+const fmt = (x: Date) => x.toISOString().slice(0, 10);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: d.title,
+  description: d.lede,
+  datePublished: fmt(d.published),
+  dateModified: fmt(d.updated),
+  inLanguage: 'ko',
+  author: { '@type': 'Person', name: '박상정' },
+  publisher: { '@type': 'Organization', name: SITE.name, url: SITE.url },
+};
+---
+
+<Base title={d.title} description={d.lede} schema={schema}>
+  <section class="section section--tint pagehead">
+    <div class="prose">
+      <p class="eyebrow">
+        <a href="/insights" class="cat-link">
+          {d.category === '트렌드' ? 'AI 트렌드' : '재무AX 성공사례'}
+        </a>
+        <span class="stage">{d.stage}에서 쓰입니다</span>
+      </p>
+      <h1>{d.title}</h1>
+      <p class="lede">{d.lede}</p>
+      <p class="meta small muted">
+        <time datetime={fmt(d.published)} class="num">{fmt(d.published)}</time>
+        {fmt(d.updated) !== fmt(d.published) && (
+          <span class="num">· updated {fmt(d.updated)}</span>
+        )}
+      </p>
+    </div>
+  </section>
+
+  {
+    d.cover && (
+      <div class="hero-img">
+        <div class="prose-wide">
+          <PostCover src={d.cover} alt={d.coverAlt} wide eager />
+        </div>
+      </div>
+    )
+  }
+
+  <article class="section article-body">
+    <div class="prose">
+      <div class="body">
+        <Content components={{ PhaseTimeline }} />
+      </div>
+
+      {
+        d.sources.length > 0 && (
+          <section class="sources">
+            <h2>출처</h2>
+            <ol>
+              {d.sources.map((s) => (
+                <li>
+                  <strong>{s.label}</strong>
+                  {s.note && <span class="muted"> — {s.note}</span>}
+                </li>
+              ))}
+            </ol>
+          </section>
+        )
+      }
+
+      <p class="back"><a href="/insights">← 블로그 전체 보기</a></p>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .pagehead { padding-bottom: clamp(2rem, 3.5vw, 2.75rem); }
+  /* 사진이 머리말 띠와 본문 사이에 걸치게 둔다 — 띠가 사진 뒤로 이어져 보인다 */
+  .hero-img { background: linear-gradient(to bottom, var(--tint-soft) 55%, var(--bg) 55%); }
+  .article-body { padding-top: clamp(2.5rem, 5vw, 4rem); }
+  .eyebrow { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+  .stage {
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    color: var(--brand);
+    background: color-mix(in srgb, var(--brand) 9%, var(--bg));
+    border-radius: 999px;
+    padding: 0.15em 0.6em;
+  }
+  .cat-link { text-decoration: none; color: var(--ink-3); }
+  .cat-link:hover { color: var(--brand); }
+  .meta { display: flex; gap: 0.5rem; margin-bottom: 0; }
+  .body > :global(:first-child) { margin-top: 0; }
+
+  /* 본문 표는 넘침 처리를 바깥 div(.md-table)가 맡는다 — 표에 직접 걸면 열 너비가 깨진다.
+     읽는 데 유리하도록 본문 폭보다 넓게 빼낸다. 도해(.fig--bleed)와 같은 폭. */
+  .body :global(.md-table) { margin: 2rem 0; }
+  @media (min-width: 58rem) {
+    .body :global(.md-table) {
+      width: 52rem;
+      max-width: none; /* .table-wrap 의 max-width:100% 를 푼다 — 안 그러면 본문 폭에 갇힌다 */
+      margin-inline: calc((42rem - 52rem) / 2);
+    }
+  }
+  .body :global(h2) { scroll-margin-top: 5rem; }
+  .body :global(img) { max-width: 100%; height: auto; }
+
+  .sources {
+    margin-top: 3.5rem;
+    padding: 1.35rem 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: var(--bg-soft);
+    font-size: 0.92rem;
+  }
+  .sources h2 { margin: 0 0 0.75rem; font-size: 0.85rem; letter-spacing: 0.06em; color: var(--ink-2); }
+  .sources ol { margin: 0; padding-left: 1.2rem; }
+  .sources li { margin-bottom: 0.45em; line-height: 1.6; }
+
+  .back { margin-top: 3rem; }
+</style>

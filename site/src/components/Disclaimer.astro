@@ -1,0 +1,32 @@
+---
+/**
+ * 디스클레이머 박스 — iconiq 에서 가져온 가장 값싼 신뢰 장치.
+ * 한계를 먼저 말하는 것이 전문성의 신호이고, 회계사 독자에게는 특히 그렇다. (14번 §4-4)
+ */
+interface Props {
+  title?: string;
+}
+const { title } = Astro.props;
+---
+
+<aside class="disclaimer">
+  {title && <p class="d-title">{title}</p>}
+  <div class="d-body"><slot /></div>
+</aside>
+
+<style>
+  .disclaimer {
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--ink-3);
+    border-radius: 0 8px 8px 0;
+    background: var(--bg-soft);
+    padding: 1rem 1.2rem;
+    margin: 1.8rem 0;
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+  }
+  .d-title { margin: 0 0 0.35rem; font-weight: 600; color: var(--ink); font-size: 0.9rem; }
+  .d-body :global(> :last-child) { margin-bottom: 0; }
+  .d-body :global(p) { margin-bottom: 0.7em; }
+</style>

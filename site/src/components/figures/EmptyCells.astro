@@ -1,0 +1,88 @@
+---
+// 재무 업무의 사슬에서 글로벌 과정이 덮는 구간과 비는 구간
+const CHAIN = [
+  { t: '데이터 확보', covered: false, note: '연동 실습 없음' },
+  { t: '분석·예측', covered: true, note: '' },
+  { t: '보고·커멘터리', covered: true, note: '' },
+  { t: '제도권 실무', covered: false, note: '결산·세무·감사' },
+  { t: '검증·서명', covered: false, note: '대사·tie-out' },
+];
+
+const W = 640;
+const BW = 116;
+const BG = 14;
+const boxY = 52;
+const BH = 74;
+const total = 250;
+---
+
+<svg viewBox={`0 0 ${W} ${total}`} role="img" aria-labelledby="ec-t">
+  <title id="ec-t">
+    재무 업무 사슬 다섯 구간 중 글로벌 과정이 덮는 것은 분석과 보고 두 구간뿐이고,
+    데이터 확보·제도권 실무·검증 세 구간은 비어 있다.
+  </title>
+
+  <text x="0" y="14" font-size="11" font-weight="600" letter-spacing="0.1em" class="t-faint">
+    재무 업무의 사슬
+  </text>
+
+  {
+    CHAIN.map((c, i) => {
+      const x = i * (BW + BG);
+      return (
+        <g>
+          <rect
+            x={x}
+            y={boxY}
+            width={BW}
+            height={BH}
+            class={c.covered ? 'f-soft s-line' : 'f-none'}
+            stroke={c.covered ? undefined : 'var(--b-J)'}
+            stroke-dasharray={c.covered ? undefined : '4 4'}
+            stroke-width="1.2"
+          />
+          <text x={x + BW / 2} y={boxY + 30} font-size="13" font-weight="600" text-anchor="middle">
+            {c.t}
+          </text>
+          <text
+            x={x + BW / 2}
+            y={boxY + 50}
+            font-size="10.5"
+            text-anchor="middle"
+            class="t-faint"
+          >
+            {c.note}
+          </text>
+          {!c.covered && (
+            <text x={x + BW / 2} y={boxY + 66} font-size="10.5" font-weight="600" text-anchor="middle" fill="var(--b-J)">
+              비어 있음
+            </text>
+          )}
+          {i < CHAIN.length - 1 && (
+            <path
+              d={`M ${x + BW + 2} ${boxY + BH / 2} l 9 0 m -4 -3.5 l 4 3.5 l -4 3.5`}
+              class="f-none s-mute"
+              stroke-width="1.2"
+            />
+          )}
+        </g>
+      );
+    })
+  }
+
+  <g>
+    <line x1={BW + BG} y1={boxY + BH + 20} x2={2 * BW + BG + BW} y2={boxY + BH + 20} class="s-ink" stroke-width="2" />
+    <text x={BW + BG} y={boxY + BH + 40} font-size="11.5" class="t-mute">
+      글로벌 12개 과정이 덮는 구간
+    </text>
+  </g>
+
+  <g>
+    <text x="0" y={boxY + BH + 74} font-size="12" font-weight="600" fill="var(--b-J)">
+      비어 있는 세 칸이 하필 회계사에게 가장 중요한 칸입니다
+    </text>
+    <text x="0" y={boxY + BH + 94} font-size="11.5" class="t-mute">
+      데이터를 못 가져오면 실습이 안 되고, 검증이 없으면 업무에 못 씁니다.
+    </text>
+  </g>
+</svg>

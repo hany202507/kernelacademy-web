@@ -1,0 +1,175 @@
+---
+import Base from '../layouts/Base.astro';
+import JoinForm from '../components/JoinForm.astro';
+import { COMPANY, SITE } from '../data/site';
+
+const 시행일 = '2026-08-07';
+---
+
+<Base
+  title="가입하기"
+  description="자료가 공개되는 대로 알려드립니다. 수집하는 것은 이메일 하나이고, 무엇에 쓰는지 전부 적어 두었습니다."
+>
+  <section class="section section--tint pagehead">
+    <div class="prose">
+      <p class="eyebrow">가입하기</p>
+      <h1>자료가 열리면 알려드립니다</h1>
+      <p class="lede">
+        <strong>웹에서 읽는 것은 가입 없이 그대로 열려 있습니다.</strong>
+        가입은 강의자료·실습 데이터를 <strong>내려받으실 때</strong>와, 자료가 공개되는
+        시점을 알려드릴 때 필요합니다.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="prose">
+      <h2 class="first">읽는 것과 내려받는 것을 나눕니다</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">무엇을</th><th scope="col">가입</th><th scope="col">비고</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">웹에서 읽기</th>
+              <td class="ap free">불요</td>
+              <td class="small">커리큘럼·블로그·자주 묻는 질문 전부. 로그인 화면을 두지 않습니다</td>
+            </tr>
+            <tr>
+              <th scope="row">파일 내려받기</th>
+              <td class="ap">필요</td>
+              <td class="small">강의자료(PPT)·실습 데이터셋·템플릿</td>
+            </tr>
+            <tr>
+              <th scope="row">타인을 가르치는 데 사용</th>
+              <td class="ap">별도</td>
+              <td class="small">
+                가입과 별개로 <a href="/about/license">사용 등록</a>을 해 주셔야 합니다
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small muted">
+        내려받는 데에만 가입을 두는 이유는 두 가지입니다. 검색과 인용으로 자료가 퍼지는 것을
+        막지 않기 위해서이고, <strong>실제로 실습하실 분께 자료가 갱신될 때 알려드리기
+        위해서</strong>입니다.
+      </p>
+
+      <h2>가입하시면 무엇을 받으십니까</h2>
+      <ul class="gets">
+        <li>
+          <strong>자료 다운로드</strong> — 강의자료·실습 데이터셋·템플릿을 내려받으실 수 있습니다
+        </li>
+        <li>
+          <strong>자료 공개 알림</strong> — 리터러시 12시간은 2026년 9월, 실무 24시간은
+          10월에 공개됩니다. 열리는 날 메일로 알려드립니다
+        </li>
+        <li>
+          <strong>교육 일정 안내</strong> — 오프라인 과정이 열릴 때 일정과 신청 방법
+        </li>
+        <li>
+          <strong>뉴스레터</strong> — 재무 실무를 실제로 바꾸는 변화만 골라 정리한 글과
+          현장 사례. <strong>가입하시면 이 메일이 발송됩니다.</strong>
+          발송 주기는 콘텐츠가 쌓이는 속도에 따르며, 정기 발송을 약속하지 않습니다
+        </li>
+      </ul>
+      <p class="small muted">
+        보내는 글은 <a href="/insights">블로그</a>에서 미리 보실 수 있습니다.
+        수신 거부는 모든 메일 하단의 링크로 즉시 처리됩니다.
+      </p>
+
+      <div class="formbox">
+        <h2 class="lead-h">가입</h2>
+        <JoinForm />
+      </div>
+
+      <h2>수집하는 것과 쓰는 곳</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">수집 항목</th>
+              <th scope="col">쓰는 곳</th>
+              <th scope="col">보유 기간</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">이메일 <span class="req">필수</span></th>
+              <td class="small">자료 다운로드 제공 · 공개 알림 · 교육 일정 안내 · 뉴스레터 발송</td>
+              <td class="small">가입 해지 시까지</td>
+            </tr>
+            <tr>
+              <th scope="row">소속 유형 <span class="opt">선택</span></th>
+              <td class="small">
+                어떤 분들이 오시는지 파악해 콘텐츠 구성에 반영합니다. 통계 목적이며
+                개별 식별에 쓰지 않습니다
+              </td>
+              <td class="small">가입 해지 시까지</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ul class="rules">
+        <li><strong>이름은 받지 않습니다.</strong> 지금 쓸 데가 없기 때문입니다</li>
+        <li><strong>제3자에게 제공하지 않습니다.</strong> 법령에 따른 요구가 있는 경우만 예외입니다</li>
+        <li>
+          <strong>국외로 이전하지 않습니다.</strong> 발송에는 국내 메일 서비스를 이용하며,
+          위탁 업무는 발송·수신 관리에 한정됩니다
+        </li>
+        <li>
+          <strong>동의를 거부하실 수 있습니다.</strong> 필수 항목에 동의하지 않으시면 가입이
+          이루어지지 않고 파일을 내려받지 못할 뿐, <strong>웹에서 읽는 데에는 아무 제약이
+          없습니다</strong>
+        </li>
+      </ul>
+
+      <div class="contact">
+        <p class="small">
+          처리자 <strong>{COMPANY.name}</strong> · 문의
+          <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a> ·
+          자세한 내용은 <a href="/privacy">개인정보 처리방침</a>
+        </p>
+        <p class="small muted num">시행일 {시행일}</p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .pagehead { padding-bottom: clamp(2.25rem, 4vw, 3.25rem); }
+  .pagehead .lede { margin-bottom: 0; }
+  .first { margin-top: 0; }
+  .lead-h { margin-top: 0; }
+
+  .gets li { margin-bottom: 0.7em; }
+
+  .formbox {
+    margin: 2.5rem 0 3rem;
+    padding: 1.75rem 1.85rem;
+    border: 1px solid var(--line);
+    border-top: 2px solid var(--ink);
+    border-radius: 3px;
+    background: var(--bg-soft);
+  }
+
+  .ap { white-space: nowrap; font-weight: 600; font-family: var(--sans); font-size: 0.88rem; }
+  .ap.free { color: var(--brand); }
+
+  .req, .opt {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-left: 0.35em;
+  }
+  .req { color: var(--b-J); }
+  .opt { color: var(--ink-3); }
+
+  .rules li { margin-bottom: 0.6em; }
+
+  .contact { margin-top: 3rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+  .contact p { margin: 0 0 0.25rem; }
+</style>
