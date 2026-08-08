@@ -1,0 +1,157 @@
+---
+import Base from '../layouts/Base.astro';
+
+/**
+ * 로그인.
+ *
+ * 비밀번호가 없다. 메일로 오는 링크가 곧 열쇠다 —
+ * 우리가 비밀번호를 보관하지 않으니 새어 나갈 것도 없고, 잊어버릴 것도 없다.
+ *
+ * 신규 계정 생성은 여기서 막는다(shouldCreateUser: false).
+ * 동의 항목을 받지 않은 채로 계정이 생기면 안 되기 때문이다 — 그건 /join 의 일이다.
+ */
+---
+
+<Base
+  title="로그인"
+  description="가입하신 이메일 주소를 넣으시면 로그인 링크를 보내 드립니다. 비밀번호는 쓰지 않습니다."
+>
+  <section class="section section--tint pagehead">
+    <div class="prose">
+      <p class="eyebrow">로그인</p>
+      <h1>비밀번호는 쓰지 않습니다</h1>
+      <p class="lede">
+        가입하신 주소를 넣으시면 <strong>로그인 링크를 메일로 보내 드립니다.</strong>
+        링크를 누르시면 그대로 로그인됩니다.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="prose">
+      <div class="formbox">
+        <form id="login-form" novalidate>
+          <label class="field">
+            <span class="lab">이메일</span>
+            <input
+              type="email"
+              name="email"
+              required
+              autocomplete="email"
+              placeholder="name@example.com"
+            />
+          </label>
+          <button class="btn" type="submit">로그인 링크 받기</button>
+          <p class="msg" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+
+      <p class="small muted">
+        아직 가입하지 않으셨습니까? <a href="/join">가입하기</a> —
+        웹에서 읽으시는 데에는 로그인이 필요하지 않습니다. 로그인은
+        <strong>파일을 내려받으실 때</strong>와 <strong>자료 사용 등록을 하실 때</strong>만
+        쓰입니다.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { supabase, callbackUrl, rememberNext, ko } from '../lib/supabase';
+
+  const form = document.getElementById('login-form') as HTMLFormElement;
+  const btn = form.querySelector('button')!;
+  const msg = form.querySelector('.msg') as HTMLElement;
+  const field = form.querySelector('.field') as HTMLElement;
+
+  /** 로그인이 필요해 튕겨 온 경우, 끝나고 원래 보려던 곳으로 되돌린다. */
+  const raw = new URLSearchParams(location.search).get('next') ?? '/me';
+  // 외부 주소로 되돌리는 것을 막는다 — 우리 사이트 안 경로만 허용한다.
+  const next = raw.startsWith('/') && !raw.startsWith('//') ? raw : '/me';
+
+  const say = (text: string, kind: 'ok' | 'err' | '' = '') => {
+    msg.textContent = text;
+    msg.className = 'msg' + (kind ? ' msg--' + kind : '');
+  };
+
+  // 이미 로그인돼 있으면 굳이 메일을 보내지 않는다.
+  supabase.auth.getSession().then(({ data }) => {
+    if (data.session) location.replace(next);
+  });
+
+  if (new URLSearchParams(location.search).has('next')) {
+    say('이어서 보시려면 로그인이 필요합니다.');
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = String(new FormData(form).get('email') ?? '').trim();
+    if (!email || !email.includes('@')) return say('이메일 주소를 입력해 주십시오.', 'err');
+
+    btn.disabled = true;
+    say('메일을 보내고 있습니다…');
+
+    rememberNext(next);
+
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: callbackUrl(), shouldCreateUser: false },
+    });
+
+    btn.disabled = false;
+    if (error) return say(ko(error.message), 'err');
+
+    field.hidden = true;
+    btn.hidden = true;
+    say(
+      `${email} 으로 로그인 링크를 보냈습니다. 메일함에서 링크를 눌러 주십시오. ` +
+        '보이지 않으면 스팸함도 확인해 주십시오.',
+      'ok'
+    );
+  });
+</script>
+
+<style>
+  .pagehead { padding-bottom: clamp(2.25rem, 4vw, 3.25rem); }
+  .pagehead .lede { margin-bottom: 0; }
+
+  .formbox {
+    margin: 0 0 2rem;
+    padding: 1.75rem 1.85rem;
+    border: 1px solid var(--line);
+    border-top: 2px solid var(--ink);
+    border-radius: 3px;
+    background: var(--bg-soft);
+    max-width: 28rem;
+  }
+  .field { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1rem; }
+  .lab { font-family: var(--sans); font-size: 0.8rem; font-weight: 600; color: var(--ink-2); }
+  input[type='email'] {
+    font: inherit;
+    font-size: 0.95rem;
+    padding: 0.58em 0.75em;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: var(--bg);
+    color: var(--ink);
+    width: 100%;
+  }
+  input:focus { border-color: var(--accent); }
+  .btn[disabled] { opacity: 0.55; pointer-events: none; }
+
+  .msg:empty { display: none; }
+  .msg {
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin: 1rem 0 0;
+    color: var(--ink-2);
+  }
+  .msg--err { color: var(--b-J); }
+  .msg--ok {
+    color: var(--ink);
+    background: var(--tint-soft);
+    border-left: 2px solid var(--brand);
+    padding: 0.85rem 1.1rem;
+  }
+</style>

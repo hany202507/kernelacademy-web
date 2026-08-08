@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Disclaimer from '../../components/Disclaimer.astro';
+import LicenseForm from '../../components/LicenseForm.astro';
 import { SITE, COMPANY } from '../../data/site';
 
 const 시행일 = '2026-08-07';
@@ -109,14 +110,12 @@ const USES = [
       <ol class="steps">
         <li>
           <strong>알려 주십시오</strong> — 기관명, 과정명, 사용 기간, 담당자 연락처를
-          아래 메일로 보내 주시면 됩니다
+          아래 폼에 넣어 주시면 됩니다
         </li>
         <li><strong>영업일 2일 안에 회신</strong>드리고 등록번호를 발급합니다</li>
         <li><strong>출처를 표기하고 사용</strong>하시면 됩니다</li>
       </ol>
-      <p class="small muted">
-        전용 등록 폼은 준비 중입니다. 그때까지는 메일로 접수합니다.
-      </p>
+      <LicenseForm />
 
       <h2>출처 표기 형식</h2>
       <p>자료 첫 장, 강의계획서, 영상 설명란 중 한 곳에 아래 문장을 넣어 주십시오.</p>
@@ -164,11 +163,13 @@ const USES = [
       </p>
 
       <div class="contact">
-        <h2>등록·문의</h2>
+        <h2>문의</h2>
         <p>
-          <a href={`mailto:${COMPANY.email}?subject=${encodeURIComponent('자료 사용 등록 신청')}`}>
+          등록 신청은 위 폼으로 받습니다. 그 밖의 문의는
+          <a href={`mailto:${COMPANY.email}?subject=${encodeURIComponent('자료 이용 문의')}`}>
             {COMPANY.email}
           </a>
+          로 주십시오.
         </p>
         <p class="small muted num">시행일 {시행일} · 변경 시 이 페이지에 공지합니다</p>
       </div>

@@ -29,6 +29,12 @@ export const COMPANY = {
 } as const;
 
 /**
+ * Supabase 프로젝트 참조(Seoul). 접속 URL 과 브라우저 저장소 키가 여기서 갈라져 나온다.
+ * 비밀이 아니다 — anon 키와 마찬가지로 공개를 전제로 한 값이고, 보호는 DB 의 RLS 가 한다.
+ */
+export const SUPABASE_REF = 'iyjixjebrjxqrrogxkcc';
+
+/**
  * 유튜브 채널 — 캐주얼 유입 브랜드.
  * 06번의 2단 브랜드 구조: 「AI CFO Lab」(유입) → Kernel Academy(정식).
  * 사이트에서 언급할 때는 항상 소속을 함께 밝혀 두 이름이 한 사다리임을 보이게 한다.
@@ -64,6 +70,19 @@ export const NAV = [
   /** 유일한 행동 유도. 헤더 버튼 대신 메뉴 안에 두고 강조만 다르게 준다. */
   { label: '가입하기', href: '/join', cta: true },
 ] as const;
+
+/**
+ * 블로그 분류. 바깥에서 안으로 좁혀 온다 —
+ * 세상에서 무엇이 바뀌나 → 다른 조직은 어떻게 했나 → 나와 내 팀은 무엇을 하나.
+ * 라벨·탭 id 를 여기서만 정의하고 목록·본문이 함께 읽는다.
+ */
+export const CATEGORIES = {
+  트렌드: { key: 'trend', label: 'AI 트렌드' },
+  사례: { key: 'case', label: '재무AX 성공사례' },
+  커리어: { key: 'career', label: '커리어와 팀' },
+} as const;
+
+export type CategoryKey = keyof typeof CATEGORIES;
 
 /** 블록 6색 — CSS 변수와 짝을 맞춘다. 배지에는 항상 문자를 함께 넣는다(색각·흑백 인쇄 대응). */
 export const BLOCK_IDS = ['R', 'C', 'P', 'J', 'V', 'D'] as const;

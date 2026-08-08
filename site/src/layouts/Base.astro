@@ -1,15 +1,17 @@
 ---
 import '../styles/global.css';
-import { SITE, COMPANY, NAV, YOUTUBE } from '../data/site';
+import { SITE, COMPANY, NAV, YOUTUBE, SUPABASE_REF } from '../data/site';
 
 interface Props {
   title?: string;
   description?: string;
   /** JSON-LD 를 추가로 붙일 때 */
   schema?: Record<string, unknown> | Record<string, unknown>[];
+  /** 로그인 뒤에만 뜻이 있는 화면 — 색인시키지 않는다 */
+  noindex?: boolean;
 }
 
-const { title, description = SITE.description, schema } = Astro.props;
+const { title, description = SITE.description, schema, noindex = false } = Astro.props;
 const fullTitle = title ? `${title} — ${SITE.name}` : `${SITE.name} — ${SITE.tagline}`;
 const canonical = new URL(Astro.url.pathname, SITE.url).href.replace(/\/$/, '') || SITE.url;
 /**
@@ -48,6 +50,16 @@ const navItems = NAV.map((item) => ({
  * 언제든 누를 수 있다.
  */
 const activeWithChildren = navItems.find((i) => i.active && i.children?.length);
+
+/**
+ * 로그인 여부 표시용.
+ *
+ * supabase-js 를 모든 페이지에 싣지 않으려고 브라우저 저장소 키만 직접 본다.
+ * 여기서 필요한 판단은 "표시를 「로그인」으로 할까 「내 정보」로 할까" 하나뿐이고,
+ * 실제 검증은 어차피 각 화면과 DB 정책이 다시 한다. 토큰이 만료됐다면
+ * /me 로 들어간 뒤 로그인 화면으로 되돌아가므로 틀려도 손해가 없다.
+ */
+const authKey = `sb-${SUPABASE_REF}-auth-token`;
 ---
 
 <!doctype html>
@@ -57,6 +69,7 @@ const activeWithChildren = navItems.find((i) => i.active && i.children?.length);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={SITE.name} />
@@ -79,7 +92,24 @@ const activeWithChildren = navItems.find((i) => i.active && i.children?.length);
     <header class="site-head">
       <div class="brandbar">
         <a class="brand" href="/">{SITE.name}</a>
+        <a class="userlink" id="userlink" href="/login" hidden>로그인</a>
       </div>
+
+      <script is:inline define:vars={{ authKey }}>
+        (function () {
+          var el = document.getElementById('userlink');
+          if (!el) return;
+          var on = false;
+          try {
+            on = !!localStorage.getItem(authKey);
+          } catch (e) {
+            /* 저장소를 막아 둔 브라우저 — 로그인 안 한 것으로 본다 */
+          }
+          el.href = on ? '/me' : '/login';
+          el.textContent = on ? '내 정보' : '로그인';
+          el.hidden = false;
+        })();
+      </script>
 
       <nav class="gnb" aria-label="주 메뉴">
         {
@@ -125,6 +155,7 @@ const activeWithChildren = navItems.find((i) => i.active && i.children?.length);
           </div>
           <nav class="foot-nav" aria-label="footer">
             <a href="/join">가입하기</a>
+            <a href="/materials">자료실</a>
             <a href="/about">우리는 누구인가</a>
             <a href="/about/committee">교육위원회</a>
             <a href="/about/faq">자주 묻는 질문</a>
@@ -178,6 +209,19 @@ const activeWithChildren = navItems.find((i) => i.active && i.children?.length);
         line-height: 1.2;
         white-space: nowrap;
       }
+      /* 로그인 상태 — 워드마크 가운데 정렬을 건드리지 않게 띄워서 오른쪽 끝에 둔다 */
+      .userlink {
+        position: absolute;
+        right: 1.25rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-family: var(--sans);
+        font-size: 0.8rem;
+        color: var(--ink-3);
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .userlink:hover { color: var(--ink); }
 
       /* ── 2층 · 주 메뉴 — 폭 전체에 고르게 ── */
       .gnb {
@@ -233,6 +277,7 @@ const activeWithChildren = navItems.find((i) => i.active && i.children?.length);
          CTA 를 워드마크 아래로 내리고 메뉴는 줄바꿈시킨다. */
       @media (max-width: 40rem) {
         .brandbar { padding: 1.1rem 1rem 0.85rem; }
+        .userlink { right: 1rem; font-size: 0.74rem; }
         .gnb { flex-wrap: wrap; justify-content: center; gap: 0.25rem 1.35rem; padding-inline: 1rem; }
         .subbar { justify-content: center; padding-inline: 1rem; }
       }

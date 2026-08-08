@@ -1,0 +1,162 @@
+---
+import Base from '../layouts/Base.astro';
+
+/**
+ * 자료실.
+ *
+ * 파일은 GitHub Pages 가 아니라 Supabase 저장소에 둔다. 이 사이트는 정적이라
+ * 호스팅 층에서는 아무것도 막을 수 없기 때문이다 — 파일을 dist/ 에 넣는 순간
+ * 주소만 알면 누구나 받는다. 그래서 버킷을 비공개로 두고, 로그인한 사람에게만
+ * 유효기간 있는 주소를 그때그때 발급한다.
+ */
+---
+
+<Base
+  title="자료실"
+  description="강의자료·실습 데이터셋·템플릿을 내려받으실 수 있습니다."
+  noindex
+>
+  <section class="section section--tint pagehead">
+    <div class="prose">
+      <p class="eyebrow">자료실</p>
+      <h1>강의자료와 실습 데이터</h1>
+      <p class="lede">
+        내려받으신 자료는 <strong>혼자 배우시는 데에는 아무 조건이 없습니다.</strong>
+        타인을 가르치는 데 쓰실 때만 <a href="/about/license">사용 등록</a>을 해 주십시오.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="prose">
+      <div id="files"><p class="small muted">불러오는 중…</p></div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { supabase, requireUser } from '../lib/supabase';
+
+  const box = document.getElementById('files')!;
+  const BUCKET = 'materials';
+
+  const size = (n?: number) => {
+    if (!n) return '';
+    const mb = n / 1024 / 1024;
+    return mb >= 1 ? `${mb.toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1024))} KB`;
+  };
+
+  type Entry = { name: string; id: string | null; metadata?: { size?: number } };
+
+  const list = async (prefix: string) => {
+    const { data, error } = await supabase.storage
+      .from(BUCKET)
+      .list(prefix, { limit: 200, sortBy: { column: 'name', order: 'asc' } });
+    if (error) throw error;
+    // Supabase 는 빈 폴더 자리표시자로 `.emptyFolderPlaceholder` 를 만든다 — 감춘다.
+    return (data ?? []).filter((e) => !e.name.startsWith('.')) as Entry[];
+  };
+
+  /** 누를 때마다 새로 발급한다. 주소가 남아 돌아다니지 않도록 수명을 짧게 둔다. */
+  const open = async (path: string, el: HTMLElement) => {
+    const before = el.textContent;
+    el.textContent = '준비 중…';
+    const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(path, 60);
+    el.textContent = before;
+    if (error || !data) return alert('내려받기 주소를 만들지 못했습니다. 다시 시도해 주십시오.');
+    location.href = data.signedUrl;
+  };
+
+  const render = (title: string | null, files: Entry[], prefix: string) => {
+    const frag = document.createDocumentFragment();
+    if (title) {
+      const h = document.createElement('h2');
+      h.textContent = title;
+      frag.append(h);
+    }
+    const ul = document.createElement('ul');
+    ul.className = 'files';
+    for (const f of files) {
+      const li = document.createElement('li');
+      const a = document.createElement('button');
+      a.type = 'button';
+      a.className = 'file';
+      a.textContent = f.name;
+      a.addEventListener('click', () => open(prefix + f.name, a));
+      const s = document.createElement('span');
+      s.className = 'size num';
+      s.textContent = size(f.metadata?.size);
+      li.append(a, s);
+      ul.append(li);
+    }
+    frag.append(ul);
+    return frag;
+  };
+
+  (async () => {
+    if (!(await requireUser())) return;
+
+    try {
+      const root = await list('');
+      const folders = root.filter((e) => e.id === null);
+      const loose = root.filter((e) => e.id !== null);
+
+      box.innerHTML = '';
+
+      if (!folders.length && !loose.length) {
+        box.innerHTML =
+          '<div class="empty"><p><strong>아직 올라온 자료가 없습니다.</strong></p>' +
+          '<p class="small">리터러시 12시간은 2026년 9월, 실무 24시간은 10월에 공개됩니다. ' +
+          '열리는 날 가입하신 주소로 알려드리겠습니다.</p></div>';
+        return;
+      }
+
+      if (loose.length) box.append(render(null, loose, ''));
+      for (const dir of folders) {
+        const files = await list(dir.name);
+        if (files.length) box.append(render(dir.name, files, dir.name + '/'));
+      }
+    } catch (e) {
+      box.innerHTML =
+        '<p class="small muted">자료 목록을 불러오지 못했습니다. 잠시 후 다시 시도해 주십시오.</p>';
+    }
+  })();
+</script>
+
+<style>
+  .pagehead { padding-bottom: clamp(2.25rem, 4vw, 3.25rem); }
+  .pagehead .lede { margin-bottom: 0; }
+
+  .files { list-style: none; margin: 1rem 0 2rem; padding: 0; }
+  .files li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .file {
+    font: inherit;
+    font-size: 1rem;
+    text-align: left;
+    background: none;
+    border: 0;
+    padding: 0;
+    color: var(--accent);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .file:hover { color: var(--ink); }
+  .size { font-family: var(--sans); font-size: 0.8rem; color: var(--ink-3); white-space: nowrap; }
+
+  .empty {
+    padding: 1.5rem 1.65rem;
+    border: 1px dashed var(--ink-3);
+    border-radius: 3px;
+    background: var(--bg-soft);
+  }
+  .empty p { margin: 0 0 0.4rem; }
+  .empty p:last-child { margin-bottom: 0; color: var(--ink-2); }
+</style>

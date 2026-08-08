@@ -4,7 +4,7 @@ import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import PhaseTimeline from '../../components/PhaseTimeline.astro';
 import PostCover from '../../components/PostCover.astro';
-import { SITE } from '../../data/site';
+import { SITE, CATEGORIES } from '../../data/site';
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const posts = await getCollection('insights');
@@ -34,7 +34,7 @@ const schema = {
     <div class="prose">
       <p class="eyebrow">
         <a href="/insights" class="cat-link">
-          {d.category === '트렌드' ? 'AI 트렌드' : '재무AX 성공사례'}
+          {CATEGORIES[d.category].label}
         </a>
         <span class="stage">{d.stage}에서 쓰입니다</span>
       </p>

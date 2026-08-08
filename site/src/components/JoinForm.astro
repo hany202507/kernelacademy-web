@@ -1,81 +1,117 @@
 ---
-import { COMPANY } from '../data/site';
-
 /**
  * 가입 폼.
  *
  * 수집은 이메일 하나 + 소속 유형(선택)뿐이다. 이름은 받지 않는다 —
  * 지금 쓸 데가 없고, 최소수집 원칙에 맞다.
  *
- * 발송 서비스는 Stibee(국내). 국내 서비스라 개인정보 국외이전 고지 의무를 피한다.
- * 리스트를 만들면 PUBLIC_STIBEE_FORM_ACTION 에 폼 action URL 을 넣는다.
+ * 비밀번호를 두지 않는다. 메일로 오는 링크를 누르면 로그인되는 방식이라
+ * 가입과 로그인이 한 번에 끝나고, 우리가 비밀번호를 보관할 일도 없다.
  */
-const action = import.meta.env.PUBLIC_STIBEE_FORM_ACTION ?? '';
-const live = action.length > 0;
-
 const SEGMENTS = ['회계법인', '기업 재무팀', '세무사무소', '학계', '학생', '기타'];
 ---
 
-{
-  live ? (
-    <form class="join" action={action} method="post" target="_blank" rel="noopener">
-      <div class="row">
-        <label class="field field--email">
-          <span class="lab">이메일 <em>필수</em></span>
-          <input type="email" name="email" required autocomplete="email" placeholder="name@example.com" />
-        </label>
-        <label class="field">
-          <span class="lab">소속 <em class="opt">선택</em></span>
-          <select name="segment">
-            <option value="">선택 안 함</option>
-            {SEGMENTS.map((s) => (
-              <option value={s}>{s}</option>
-            ))}
-          </select>
-        </label>
-      </div>
+<form class="join" id="join-form" novalidate>
+  <div class="row">
+    <label class="field field--email">
+      <span class="lab">이메일 <em>필수</em></span>
+      <input
+        type="email"
+        name="email"
+        required
+        autocomplete="email"
+        placeholder="name@example.com"
+      />
+    </label>
+    <label class="field">
+      <span class="lab">소속 <em class="opt">선택</em></span>
+      <select name="segment">
+        <option value="">선택 안 함</option>
+        {SEGMENTS.map((s) => <option value={s}>{s}</option>)}
+      </select>
+    </label>
+  </div>
 
-      <ul class="agree">
-        <li>
-          <label>
-            <input type="checkbox" name="agree_required" required />
-            <span>
-              <strong>[필수]</strong> 아래 「수집하는 것과 쓰는 곳」에 동의합니다.
-            </span>
-          </label>
-        </li>
-        <li>
-          <label>
-            <input type="checkbox" name="agree_optional" />
-            <span>
-              <strong>[선택]</strong> 부트캠프 모집·커뮤니티 개설 등 그 밖의 안내도 받겠습니다.
-            </span>
-          </label>
-        </li>
-      </ul>
+  <ul class="agree">
+    <li>
+      <label>
+        <input type="checkbox" name="agree_required" required />
+        <span>
+          <strong>[필수]</strong> 아래 「수집하는 것과 쓰는 곳」에 동의하며, 뉴스레터가
+          발송되는 것을 확인했습니다.
+        </span>
+      </label>
+    </li>
+    <li>
+      <label>
+        <input type="checkbox" name="marketing" />
+        <span>
+          <strong>[선택]</strong> 부트캠프 모집·커뮤니티 개설 등 그 밖의 안내도 받겠습니다.
+        </span>
+      </label>
+    </li>
+  </ul>
 
-      <button class="btn" type="submit">가입하기</button>
-    </form>
-  ) : (
-    <div class="join">
-      <p class="fallback">
-        가입 폼을 준비하고 있습니다. 우선 메일로 알려 주시면 명단에 넣어 드리고,
-        자료가 열리는 대로 안내드리겠습니다.
-      </p>
-      <a
-        class="btn"
-        href={`mailto:${COMPANY.email}?subject=${encodeURIComponent('가입 신청')}&body=${encodeURIComponent(
-          '소속 유형(회계법인 / 기업 재무팀 / 세무사무소 / 학계 / 학생 / 기타):\n\n'
-        )}`}
-      >
-        {COMPANY.email}
-      </a>
-      <p class="small muted note">
-        메일로 주신 주소는 아래 「수집하는 것과 쓰는 곳」과 동일한 범위에서만 씁니다.
-      </p>
-    </div>
-  )
-}
+  <button class="btn" type="submit">가입하기</button>
+  <p class="msg" role="status" aria-live="polite"></p>
+  <p class="small muted have">
+    이미 가입하셨습니까? <a href="/login">로그인</a>
+  </p>
+</form>
+
+<script>
+  import { supabase, callbackUrl, rememberNext, ko } from '../lib/supabase';
+
+  const form = document.getElementById('join-form') as HTMLFormElement;
+  const btn = form.querySelector('button')!;
+  const msg = form.querySelector('.msg') as HTMLElement;
+
+  const say = (text: string, kind: 'ok' | 'err' | '' = '') => {
+    msg.textContent = text;
+    msg.className = 'msg' + (kind ? ' msg--' + kind : '');
+  };
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const f = new FormData(form);
+    const email = String(f.get('email') ?? '').trim();
+
+    if (!email || !email.includes('@')) return say('이메일 주소를 입력해 주십시오.', 'err');
+    if (!f.get('agree_required')) return say('필수 항목에 동의해 주셔야 가입이 됩니다.', 'err');
+
+    btn.disabled = true;
+    say('메일을 보내고 있습니다…');
+
+    rememberNext('/me');
+
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: callbackUrl(),
+        // 계정을 만드는 자리다. 로그인 화면과 달리 신규 생성을 허용한다.
+        shouldCreateUser: true,
+        // 계정이 처음 만들어질 때만 반영된다 → 트리거가 profiles 로 옮겨 적는다.
+        data: {
+          segment: String(f.get('segment') ?? ''),
+          marketing_opt_in: !!f.get('marketing'),
+        },
+      },
+    });
+
+    btn.disabled = false;
+
+    if (error) return say(ko(error.message), 'err');
+
+    form.querySelector('.row')!.setAttribute('hidden', '');
+    form.querySelector('.agree')!.setAttribute('hidden', '');
+    btn.hidden = true;
+    say(
+      `${email} 으로 가입 링크를 보냈습니다. 메일함에서 링크를 누르시면 가입이 끝납니다. ` +
+        '메일이 보이지 않으면 스팸함도 확인해 주십시오.',
+      'ok'
+    );
+  });
+</script>
 
 <style>
   .join { margin: 0; }
@@ -104,6 +140,23 @@ const SEGMENTS = ['회계법인', '기업 재무팀', '세무사무소', '학계
   .agree input { margin-top: 0.28em; flex: none; accent-color: var(--accent); }
   .agree strong { font-weight: 600; }
 
-  .fallback { margin: 0 0 1rem; }
-  .note { margin: 0.9rem 0 0; }
+  .btn[disabled] { opacity: 0.55; pointer-events: none; }
+
+  .msg:empty { display: none; }
+  .msg {
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin: 1rem 0 0;
+    color: var(--ink-2);
+  }
+  .msg--err { color: var(--b-J); }
+  .msg--ok {
+    color: var(--ink);
+    background: var(--tint-soft);
+    border-left: 2px solid var(--brand);
+    padding: 0.85rem 1.1rem;
+  }
+
+  .have { margin: 1rem 0 0; }
 </style>

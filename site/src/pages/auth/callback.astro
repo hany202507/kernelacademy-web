@@ -1,0 +1,72 @@
+---
+import Base from '../../layouts/Base.astro';
+
+/**
+ * 메일 링크가 돌아오는 자리.
+ *
+ * supabase-js 가 `detectSessionInUrl` 로 코드 교환을 대신 해 주지만,
+ * 아직 처리되지 않은 채로 이 스크립트가 먼저 도는 경우가 있어 직접도 한 번 시도한다.
+ * 둘 다 여러 번 불려도 안전하다.
+ *
+ * 이 페이지는 검색에 잡힐 필요가 없다.
+ */
+---
+
+<Base title="로그인 중" description="로그인을 마무리하고 있습니다." noindex>
+  <section class="section">
+    <div class="prose">
+      <div id="state">
+        <h1 class="h">로그인하고 있습니다…</h1>
+        <p class="lede">잠시만 기다려 주십시오.</p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { supabase, takeNext, ko } from '../../lib/supabase';
+
+  const box = document.getElementById('state')!;
+
+  const fail = (text: string) => {
+    box.innerHTML = '';
+    const h = document.createElement('h1');
+    h.className = 'h';
+    h.textContent = '로그인하지 못했습니다';
+    const p = document.createElement('p');
+    p.className = 'lede';
+    p.textContent = text;
+    const a = document.createElement('p');
+    a.innerHTML = '<a href="/login">로그인 링크 다시 받기</a>';
+    box.append(h, p, a);
+  };
+
+  (async () => {
+    const q = new URLSearchParams(location.search);
+    // 링크가 만료됐거나 이미 쓰인 경우 Supabase 는 오류를 조각(#)에 실어 보낸다.
+    const hash = new URLSearchParams(location.hash.slice(1));
+    const err = q.get('error_description') ?? hash.get('error_description') ?? q.get('error');
+    if (err) return fail(ko(err.replace(/\+/g, ' ')));
+
+    let { data } = await supabase.auth.getSession();
+
+    if (!data.session) {
+      const code = q.get('code');
+      if (code) {
+        const r = await supabase.auth.exchangeCodeForSession(code);
+        if (r.error) return fail(ko(r.error.message));
+        data = r.data as typeof data;
+      }
+    }
+
+    if (!data.session) {
+      return fail('링크가 만료되었거나 이미 사용되었습니다. 다시 받아 주십시오.');
+    }
+
+    location.replace(takeNext());
+  })();
+</script>
+
+<style>
+  .h { margin-top: 0; }
+</style>

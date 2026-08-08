@@ -39,7 +39,7 @@ const insights = defineCollection({
   loader: glob({ base: './src/content/insights', pattern: '*.{md,mdx}' }),
   schema: z.object({
     title: z.string(),
-    category: z.enum(['트렌드', '사례']),
+    category: z.enum(['트렌드', '사례', '커리어']),
     lede: z.string(),
     published: z.coerce.date(),
     updated: z.coerce.date(),

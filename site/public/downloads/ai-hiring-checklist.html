@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>재무 AI 채용 면접 체크리스트 — Kernel Academy</title>
+<meta name="description" content="재무 AI 채용 면접에서 AI 활용 역량 네 축을 확인하는 질문지. 각 항목의 질문과 좋은 답·약한 답의 경계, 메모 칸이 들어 있는 인쇄용 한 장짜리입니다.">
+<style>
+  :root{
+    --bg:#fcfdfb; --bg-soft:#f1f6ef; --ink:#1a1c19; --ink-2:#53574f; --ink-3:#91968c;
+    --line:#dfe5db; --line-soft:#eaefe7; --accent:#16264a; --accent-2:#2f6fb0; --brand:#3f7350;
+    --serif:'Noto Serif KR','Nanum Myeongjo',Batang,바탕,Georgia,serif;
+    --sans:'Pretendard Variable',Pretendard,'Malgun Gothic',맑은 고딕,-apple-system,system-ui,sans-serif;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.75;padding:2.5rem 1.25rem 4rem}
+  body,h1,h2,h3,p,li,td,th{word-break:keep-all;overflow-wrap:break-word}
+  .sheet{max-width:44rem;margin:0 auto}
+
+  header{border-bottom:2px solid var(--ink);padding-bottom:1.3rem;margin-bottom:2rem}
+  .eyebrow{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);margin:0 0 .6rem}
+  h1{font-family:var(--serif);font-size:1.65rem;line-height:1.4;margin:0 0 .7rem;text-wrap:balance}
+  .sub{font-size:.9rem;color:var(--ink-2);margin:0}
+
+  h2{font-family:var(--serif);font-size:1.12rem;margin:2.6rem 0 .9rem}
+
+  .contents{list-style:none;margin:0 0 1.4rem;padding:0;border-top:1px solid var(--line)}
+  .contents li{display:flex;gap:.75rem;align-items:baseline;padding:.72rem .2rem;border-bottom:1px solid var(--line-soft)}
+  .contents .n{font-family:var(--serif);font-weight:700;color:var(--accent-2);flex:none}
+  .contents b{font-weight:700}
+  .contents span.d{color:var(--ink-3);font-size:.88rem}
+
+  .note{font-size:.88rem;color:var(--ink-2);background:var(--bg-soft);border:1px solid var(--line-soft);padding:1rem 1.1rem;margin:0 0 1.5rem}
+  .note b{color:var(--ink)}
+
+  /* 샘플 */
+  .sample{border:1px solid var(--line);padding:1.3rem 1.3rem .6rem;position:relative;background:#fff}
+  .tag{position:absolute;top:-.66rem;left:1.1rem;background:var(--brand);color:#fff;font-size:.66rem;font-weight:700;letter-spacing:.1em;padding:.16rem .55rem;border-radius:2px}
+  .sample h3{font-size:1rem;margin:.3rem 0 .9rem;line-height:1.45}
+  .sample h3 span{font-weight:400;color:var(--ink-3)}
+  .ask{font-family:var(--serif);font-size:1rem;background:#eef1f6;border-left:3px solid var(--accent-2);padding:.7rem .9rem;margin:0 0 1rem}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+  @media (max-width:640px){.split{grid-template-columns:1fr}}
+  .split div{font-size:.85rem;line-height:1.65}
+  .split .lab{display:block;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem}
+  .good .lab{color:var(--brand)} .weak .lab{color:var(--ink-3)}
+  .good{color:var(--ink-2)} .weak{color:var(--ink-3)}
+  .score{display:flex;align-items:center;gap:.55rem;font-size:.78rem;color:var(--ink-3);border-top:1px dashed var(--line);padding-top:.7rem;margin-bottom:1rem}
+  .box{display:inline-block;width:1.15rem;height:1.15rem;border:1.5px solid var(--ink-3);border-radius:2px}
+  .score .memo{flex:1;border-bottom:1px solid var(--line);height:1.15rem}
+
+  .gate{margin-top:2.6rem;padding:1.6rem 1.5rem;border:1.5px solid var(--accent);background:#fff}
+  .gate h2{margin:0 0 .7rem;font-size:1.15rem}
+  .gate p{margin:0 0 1rem;font-size:.92rem;color:var(--ink-2)}
+  .gate p:last-of-type{margin-bottom:1.3rem}
+  .cta{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;font-size:.95rem;padding:.75rem 1.5rem;border-radius:3px}
+  .cta:hover{background:#1e3363}
+  .gate .fine{font-size:.8rem;color:var(--ink-3);margin:1rem 0 0}
+
+  footer{margin-top:2.6rem;padding-top:1.2rem;border-top:1px solid var(--line);font-size:.76rem;color:var(--ink-3);line-height:1.65}
+  footer a{color:var(--accent-2)}
+  a:focus-visible{outline:2px solid var(--accent-2);outline-offset:3px}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<header>
+  <p class="eyebrow">Kernel Academy · 무료 자료</p>
+  <h1>재무 AI 채용 면접 체크리스트</h1>
+  <p class="sub">지원자의 AI 활용 역량을 네 축으로 확인하는 질문지입니다. 인쇄해서 면접장에 그대로 올려두는 한 장짜리로 만들었습니다.</p>
+</header>
+
+<h2>무엇이 들어 있나</h2>
+
+<ul class="contents">
+  <li><span class="n">①</span><div><b>맥락 설정력</b> — <span class="d">이 일이 어디를 향하는지 아는가</span></div></li>
+  <li><span class="n">②</span><div><b>분해력</b> — <span class="d">일을 쪼개고 맡길 곳을 가르는가</span></div></li>
+  <li><span class="n">③</span><div><b>검증력</b> — <span class="d">틀린 것을 어떻게 잡았는가 <b>(4등급 판정표)</b></span></div></li>
+  <li><span class="n">④</span><div><b>지속 운영력</b> — <span class="d">지금도 돌아가는가</span></div></li>
+</ul>
+
+<p class="note">
+  각 항목에 <b>물을 질문</b>, <b>좋은 답과 약한 답이 갈리는 경계</b>, <b>체크칸과 메모란</b>이 들어 있습니다.
+  지원자가 가져온 것을 놓고 순서대로 물으면 되고, <b>회사가 따로 준비해야 하는 것은 없습니다.</b>
+</p>
+
+<h2>③ 검증력 — 이 항목만 그대로 보여드립니다</h2>
+
+<div class="sample">
+  <span class="tag">샘플</span>
+  <h3>③ 검증력 <span>— 틀린 것을 어떻게 잡았는가</span></h3>
+  <p class="ask">“틀린 걸 어떻게 잡으셨습니까? 몇 건이었습니까?”<br>
+  이어서 — “<b>그 자료는 실제 자료입니까, 만드신 케이스입니까?</b>”<br>
+  한 번 더 — “깨지는 경우를 몇 가지나 뽑아보셨습니까?”</p>
+  <table style="width:100%;border-collapse:collapse;font-size:.85rem;margin:0 0 1rem">
+    <tr><td style="width:2.4rem;padding:.4rem .3rem;border-bottom:1px solid var(--line-soft);font-weight:700;color:var(--ink-3)">1</td><td style="padding:.4rem .3rem;border-bottom:1px solid var(--line-soft);color:var(--ink-3)">“확인했습니다.”</td></tr>
+    <tr><td style="padding:.4rem .3rem;border-bottom:1px solid var(--line-soft);font-weight:700;color:var(--accent-2)">2</td><td style="padding:.4rem .3rem;border-bottom:1px solid var(--line-soft)">숫자로 말한다 — “150건 중 14건, 유형은 셋”</td></tr>
+    <tr><td style="padding:.4rem .3rem;border-bottom:1px solid var(--line-soft);font-weight:700;color:var(--brand)">3</td><td style="padding:.4rem .3rem;border-bottom:1px solid var(--line-soft)"><b>그 숫자가 실제 자료에서 나왔다</b> — 재무의 기대선</td></tr>
+    <tr><td style="padding:.4rem .3rem;font-weight:700;color:var(--brand)">4</td><td style="padding:.4rem .3rem">깨질 경우를 미리 뽑아 자동·보류·사람 확인으로 갈라두었다</td></tr>
+  </table>
+  <p class="score"><span class="box"></span><span class="box"></span><span class="box"></span><span class="box"></span><span class="box"></span> 메모 <span class="memo"></span></p>
+</div>
+
+<div class="gate">
+  <h2>나머지 세 항목과 인쇄용 파일</h2>
+  <p>인쇄용 PDF와, 회사 사정에 맞게 고쳐 쓸 수 있는 서식 파일을 함께 드립니다. <b>무료입니다.</b></p>
+  <a class="cta" href="/join">로그인하고 받기</a>
+  <p class="fine">사내 배포는 출처만 남겨 주세요.</p>
+</div>
+
+<footer>
+  <p>이 체크리스트는 재무 AI 에이전트 6건을 직접 채점하며 정리한 것입니다. 네 축을 왜 이렇게 나눴는지는 「재무 AI 채용, 무엇을 어떻게 물을 것인가」(<a href="/insights/ai-hiring-five-competencies">/insights/ai-hiring-five-competencies</a>)에 있습니다.<br>
+  참고 프레임: Anthropic AI Fluency Framework(Dakan·Feller, CC BY-NC-SA 4.0) · ISACA AAIA 시험 배점 · Anthropic Economic Index(2026-06-26). 전부 2026-08-08 확인. — Kernel Academy</p>
+</footer>
+
+</div>
+</body>
+</html>

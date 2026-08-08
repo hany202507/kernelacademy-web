@@ -1,0 +1,191 @@
+---
+/**
+ * 자료 사용 등록 신청.
+ *
+ * 심사가 아니라 등록이므로 폼을 짧게 둔다. 필수는 전부 기관 단위 정보이고,
+ * 개인 신상(담당자 성명·사진·후기)은 선택 동의로 따로 뺀다.
+ *
+ * 로그인을 요구하는 이유는 회신할 곳과 등록번호를 붙일 곳이 있어야 하기 때문이다.
+ */
+const USE_TYPES = ['대학 강의', '사내 교육', '학원', '강연', '영상 재편집', '기타'];
+---
+
+<div class="lic" id="lic">
+  <p class="loading small muted">불러오는 중…</p>
+
+  <div class="gate" hidden>
+    <p>신청에는 로그인이 필요합니다. 회신드릴 곳과 등록번호를 붙일 자리가 필요해서입니다.</p>
+    <p class="btns">
+      <a class="btn" href="/login?next=%2Fabout%2Flicense">로그인하고 신청하기</a>
+      <a class="plain" href="/join">아직 가입 전이십니까?</a>
+    </p>
+  </div>
+
+  <form class="panel" hidden novalidate>
+    <div class="row">
+      <label class="field">
+        <span class="lab">기관명 <em>필수</em></span>
+        <input type="text" name="org_name" required placeholder="○○대학교 / ○○회계법인" />
+      </label>
+      <label class="field">
+        <span class="lab">과정명 <em>필수</em></span>
+        <input type="text" name="course_name" required placeholder="재무 데이터 분석" />
+      </label>
+    </div>
+    <div class="row">
+      <label class="field">
+        <span class="lab">사용 기간 <em>필수</em></span>
+        <input type="text" name="period" required placeholder="2026년 2학기 / 2026-09 ~ 12" />
+      </label>
+      <label class="field">
+        <span class="lab">이용 유형 <em>필수</em></span>
+        <select name="use_type" required>
+          {USE_TYPES.map((t) => <option value={t}>{t}</option>)}
+        </select>
+      </label>
+    </div>
+    <label class="field">
+      <span class="lab">담당자 연락처 <em>필수</em></span>
+      <input type="text" name="contact" required placeholder="성함 · 이메일 또는 전화" />
+    </label>
+
+    <label class="check">
+      <input type="checkbox" name="consent_personal" />
+      <span>
+        <strong>[선택]</strong> 담당자 성명·사진·후기를 소개 자료에 쓰는 데 동의합니다.
+        동의하지 않으셔도 등록에는 영향이 없습니다.
+      </span>
+    </label>
+    <p class="small muted note">
+      기관명·과정명·사용 기간은 사용 사실을 소개 자료에 인용하는 데 쓰입니다.
+      이 인용에 대한 동의는 신청과 함께 이루어집니다.
+    </p>
+
+    <div class="actions">
+      <button class="btn" type="submit">등록 신청</button>
+      <span class="msg" role="status" aria-live="polite"></span>
+    </div>
+  </form>
+
+  <div class="done" hidden>
+    <p><strong>접수했습니다.</strong> 영업일 2일 안에 회신드리고 등록번호를 발급합니다.</p>
+    <p class="small">진행 상황은 <a href="/me">내 정보</a>에서 보실 수 있습니다.</p>
+  </div>
+</div>
+
+<script>
+  import { supabase } from '../lib/supabase';
+
+  const root = document.getElementById('lic')!;
+  const loading = root.querySelector('.loading') as HTMLElement;
+  const gate = root.querySelector('.gate') as HTMLElement;
+  const form = root.querySelector('form') as HTMLFormElement;
+  const done = root.querySelector('.done') as HTMLElement;
+  const msg = form.querySelector('.msg') as HTMLElement;
+  const btn = form.querySelector('button')!;
+
+  supabase.auth.getSession().then(({ data }) => {
+    loading.hidden = true;
+    if (data.session) form.hidden = false;
+    else gate.hidden = false;
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const { data: s } = await supabase.auth.getSession();
+    if (!s.session) return (location.href = '/login?next=%2Fabout%2Flicense');
+
+    const f = new FormData(form);
+    const text = (k: string) => String(f.get(k) ?? '').trim();
+
+    for (const [k, label] of [
+      ['org_name', '기관명'],
+      ['course_name', '과정명'],
+      ['period', '사용 기간'],
+      ['contact', '담당자 연락처'],
+    ] as const) {
+      if (!text(k)) {
+        msg.textContent = `${label}을(를) 입력해 주십시오.`;
+        msg.className = 'msg msg--err';
+        return;
+      }
+    }
+
+    btn.disabled = true;
+    msg.textContent = '보내는 중…';
+    msg.className = 'msg';
+
+    const { error } = await supabase.from('license_requests').insert({
+      user_id: s.session.user.id,
+      org_name: text('org_name'),
+      course_name: text('course_name'),
+      period: text('period'),
+      use_type: text('use_type') || '기타',
+      contact: text('contact'),
+      consent_personal: !!f.get('consent_personal'),
+    });
+
+    btn.disabled = false;
+
+    if (error) {
+      msg.textContent = '접수하지 못했습니다. 잠시 후 다시 시도해 주십시오.';
+      msg.className = 'msg msg--err';
+      return;
+    }
+
+    form.hidden = true;
+    done.hidden = false;
+  });
+</script>
+
+<style>
+  .lic { margin: 1.5rem 0 0; }
+
+  .gate, .panel, .done {
+    padding: 1.6rem 1.75rem;
+    border: 1px solid var(--line);
+    border-top: 2px solid var(--ink);
+    border-radius: 3px;
+    background: var(--bg-soft);
+  }
+  .gate p { margin: 0 0 1rem; }
+  .btns { display: flex; align-items: center; gap: 1.1rem; flex-wrap: wrap; margin: 0; }
+  .plain { font-family: var(--sans); font-size: 0.87rem; color: var(--ink-2); }
+
+  .row { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+  .field { display: flex; flex-direction: column; gap: 0.3rem; flex: 1 1 14rem; margin-bottom: 0.7rem; }
+  .lab { font-family: var(--sans); font-size: 0.8rem; font-weight: 600; color: var(--ink-2); }
+  .lab em { font-style: normal; font-weight: 600; color: var(--b-J); font-size: 0.74rem; margin-left: 0.2em; }
+
+  input[type='text'], select {
+    font: inherit;
+    font-size: 0.95rem;
+    padding: 0.58em 0.75em;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: var(--bg);
+    color: var(--ink);
+    width: 100%;
+  }
+  input:focus, select:focus { border-color: var(--accent); }
+
+  .check {
+    display: flex;
+    gap: 0.6rem;
+    align-items: start;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin: 1rem 0 0.6rem;
+  }
+  .check input { margin-top: 0.28em; flex: none; accent-color: var(--accent); }
+  .note { margin: 0 0 1.2rem; }
+
+  .actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .btn[disabled] { opacity: 0.55; pointer-events: none; }
+  .msg { font-family: var(--sans); font-size: 0.87rem; color: var(--ink-2); }
+  .msg--err { color: var(--b-J); }
+
+  .done p { margin: 0 0 0.4rem; }
+  .done p:last-child { margin-bottom: 0; }
+</style>

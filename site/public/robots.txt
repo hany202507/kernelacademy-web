@@ -1,0 +1,12 @@
+# 커리큘럼·블로그는 전부 열어 둔다. 검색과 인용으로 퍼지는 것이 이 프로그램의 전제다.
+# LLM 크롤러도 막지 않는다.
+User-agent: *
+Allow: /
+
+# 로그인 뒤에만 뜻이 있는 화면 — 색인해 봐야 빈 껍데기만 잡힌다.
+Disallow: /login
+Disallow: /me
+Disallow: /materials
+Disallow: /auth/
+
+Sitemap: https://kernelacademy.io/sitemap-index.xml

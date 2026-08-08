@@ -37,7 +37,11 @@ export default defineConfig({
   site: 'https://kernelacademy.io',
   trailingSlash: 'never',
   build: { format: 'file' },
-  integrations: [mdx(), sitemap()],
+  integrations: [
+    mdx(),
+    /** 로그인 뒤에만 뜻이 있는 화면은 색인 대상이 아니다 — Base 의 noindex 와 짝을 맞춘다. */
+    sitemap({ filter: (page) => !/\/(login|me|materials|auth\/callback)\/?$/.test(page) }),
+  ],
   markdown: {
     shikiConfig: { theme: 'github-light', wrap: true },
     rehypePlugins: [rehypeWrapTables],
