@@ -12,7 +12,16 @@ interface Props {
 const { title, description = SITE.description, schema } = Astro.props;
 const fullTitle = title ? `${title} — ${SITE.name}` : `${SITE.name} — ${SITE.tagline}`;
 const canonical = new URL(Astro.url.pathname, SITE.url).href.replace(/\/$/, '') || SITE.url;
-const path = Astro.url.pathname.replace(/\/$/, '');
+/**
+ * 현재 경로. build.format: 'file' 이라 빌드 산출물에서는 `/about.html` 로 들어온다.
+ * 개발 서버(`/about`)와 값이 달라 그대로 비교하면 구역 판정이 빌드에서만 어긋난다.
+ * 확장자와 index, 끝 슬래시를 걷어내고 하나로 맞춘다.
+ */
+const path =
+  Astro.url.pathname
+    .replace(/\/index\.html$/, '/')
+    .replace(/\.html$/, '')
+    .replace(/(.)\/$/, '$1') || '/';
 
 const org = {
   '@context': 'https://schema.org',
@@ -31,16 +40,14 @@ const navItems = NAV.map((item) => ({
   children: 'children' in item ? item.children : undefined,
   active: path === item.href || path.startsWith(item.href + '/'),
 }));
-const withChildren = navItems.filter((i) => i.children?.length);
-
-/** 마우스를 올린 구역의 하위 바를 보여 주는 규칙. 항목마다 짝이 필요해 여기서 만든다. */
-const hoverRules = withChildren
-  .map(
-    (i) =>
-      `.site-head:has(.gnb-item[data-key="${i.key}"]:hover) .subbar[data-key="${i.key}"],` +
-      `.site-head:has(.gnb-item[data-key="${i.key}"]:focus-within) .subbar[data-key="${i.key}"]{display:flex}`
-  )
-  .join('');
+/**
+ * 하위 메뉴는 "지금 서 있는 구역"의 것만 띄운다.
+ *
+ * 호버로 열면 마우스가 메뉴에서 바로 내려가는 순간 :hover 가 풀려 바가 사라지고,
+ * 나타났다 없어지면서 본문까지 밀린다. 호버를 쓰지 않으면 늘 같은 자리에 있고
+ * 언제든 누를 수 있다.
+ */
+const activeWithChildren = navItems.find((i) => i.active && i.children?.length);
 ---
 
 <!doctype html>
@@ -91,21 +98,16 @@ const hoverRules = withChildren
       </nav>
 
       {
-        withChildren.map((item) => (
-          <div
-            class:list={['subbar', { 'subbar--on': item.active }]}
-            data-key={item.key}
-            aria-label={`${item.label} 하위 메뉴`}
-          >
-            {item.children!.map((c) => (
+        activeWithChildren && (
+          <nav class="subbar" aria-label={`${activeWithChildren.label} 하위 메뉴`}>
+            {activeWithChildren.children!.map((c) => (
               <a href={c.href} aria-current={path === c.href ? 'page' : undefined}>
                 {c.label}
               </a>
             ))}
-          </div>
-        ))
+          </nav>
+        )
       }
-      <style is:inline set:html={hoverRules} />
     </header>
 
     <main id="main">
@@ -209,7 +211,7 @@ const hoverRules = withChildren
 
       /* ── 3층 · 하위 메뉴 — 지금 구역의 것이 늘 보인다 ── */
       .subbar {
-        display: none;
+        display: flex;
         justify-content: space-evenly;
         gap: 0.5rem 1.5rem;
         flex-wrap: wrap;
@@ -217,7 +219,6 @@ const hoverRules = withChildren
         background: var(--tint);
         border-top: 1px solid color-mix(in srgb, var(--brand) 12%, transparent);
       }
-      .subbar--on { display: flex; }
       .subbar a {
         font-family: var(--serif);
         font-size: 0.92rem;
