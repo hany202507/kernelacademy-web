@@ -23,6 +23,10 @@ const SEGMENTS = ['회계법인', '기업 재무팀', '세무사무소', '학계
       <h2 class="first">가입 정보</h2>
       <form id="prefs">
         <label class="field">
+          <span class="lab">이름 <em>선택</em></span>
+          <input type="text" name="full_name" autocomplete="name" placeholder="홍길동" />
+        </label>
+        <label class="field">
           <span class="lab">소속 유형 <em>선택</em></span>
           <select name="segment">
             <option value="">선택 안 함</option>
@@ -102,11 +106,12 @@ const SEGMENTS = ['회계법인', '기업 재무팀', '세무사무소', '학계
 
     const { data: profile } = await supabase
       .from('profiles')
-      .select('segment, marketing_opt_in')
+      .select('full_name, segment, marketing_opt_in')
       .eq('id', user.id)
       .maybeSingle();
 
     if (profile) {
+      (form.elements.namedItem('full_name') as HTMLInputElement).value = profile.full_name ?? '';
       (form.elements.namedItem('segment') as HTMLSelectElement).value = profile.segment ?? '';
       (form.elements.namedItem('marketing') as HTMLInputElement).checked =
         !!profile.marketing_opt_in;
@@ -153,6 +158,7 @@ const SEGMENTS = ['회계법인', '기업 재무팀', '세무사무소', '학계
     const { error } = await supabase
       .from('profiles')
       .update({
+        full_name: String(f.get('full_name') ?? '').trim() || null,
         segment: String(f.get('segment') ?? '') || null,
         marketing_opt_in: !!f.get('marketing'),
       })
@@ -184,7 +190,7 @@ const SEGMENTS = ['회계법인', '기업 재무팀', '세무사무소', '학계
   .field { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1rem; }
   .lab { font-family: var(--sans); font-size: 0.8rem; font-weight: 600; color: var(--ink-2); }
   .lab em { font-style: normal; color: var(--ink-3); font-size: 0.74rem; margin-left: 0.2em; }
-  select {
+  select, input[type='text'] {
     font: inherit;
     font-size: 0.95rem;
     padding: 0.58em 0.75em;

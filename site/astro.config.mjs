@@ -47,4 +47,16 @@ export default defineConfig({
     rehypePlugins: [rehypeWrapTables],
   },
   devToolbar: { enabled: false },
+  vite: {
+    build: {
+      /**
+       * 작은 자산을 HTML·CSS 안에 끼워 넣지 않는다.
+       *
+       * 기본값이면 200자짜리 스크립트를 인라인으로 박아 넣는데, 그러면 CSP 에
+       * script-src 'unsafe-inline' 을 열어야 하고 CSP 를 두는 의미가 사라진다.
+       * 요청 하나를 아끼는 것보다 인라인 스크립트를 전부 없애는 쪽이 낫다.
+       */
+      assetsInlineLimit: 0,
+    },
+  },
 });
