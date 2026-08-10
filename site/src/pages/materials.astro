@@ -48,6 +48,19 @@ import Base from '../layouts/Base.astro';
 
   type Entry = { name: string; id: string | null; metadata?: { size?: number } };
 
+  /**
+   * 화면에 보일 이름.
+   *
+   * Supabase Storage 는 객체 키에 한글을 받지 않는다(InvalidKey). 그래서 키는 영문으로 두고
+   * 여기서만 한글로 바꿔 보여준다. 목록에 없는 파일은 확장자만 떼고 그대로 쓴다 —
+   * 자료가 늘 때마다 이 표를 고치지 않아도 화면이 깨지지 않게 한다.
+   */
+  const LABELS: Record<string, string> = {
+    'ai-interview-prep-checklist.html': '재무 AI 면접 준비 체크리스트',
+  };
+  const label = (name: string) => LABELS[name] ?? name.replace(/\.[^.]+$/, '');
+  const ext = (name: string) => (name.includes('.') ? name.split('.').pop()!.toUpperCase() : '');
+
   const list = async (prefix: string) => {
     const { data, error } = await supabase.storage
       .from(BUCKET)
@@ -81,11 +94,11 @@ import Base from '../layouts/Base.astro';
       const a = document.createElement('button');
       a.type = 'button';
       a.className = 'file';
-      a.textContent = f.name;
+      a.textContent = label(f.name);
       a.addEventListener('click', () => open(prefix + f.name, a));
       const s = document.createElement('span');
       s.className = 'size num';
-      s.textContent = size(f.metadata?.size);
+      s.textContent = [ext(f.name), size(f.metadata?.size)].filter(Boolean).join(' · ');
       li.append(a, s);
       ul.append(li);
     }
