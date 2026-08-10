@@ -109,12 +109,30 @@ import Base from '../layouts/Base.astro';
   (async () => {
     if (!(await requireUser())) return;
 
+    /*
+     * `?f=파일명` 이 붙어 있으면 목록을 거치지 않고 그 파일을 바로 연다.
+     *
+     * 글에서 「받기」를 누른 사람은 자료실을 구경하러 온 것이 아니다. 로그인하지 않았다면
+     * requireUser 가 쿼리까지 붙여 되돌려 주므로(next = pathname + search), 로그인 뒤에도
+     * 같은 자리로 돌아와 그대로 열린다. 파일이 없으면 조용히 목록으로 떨어뜨린다.
+     */
+    const want = new URLSearchParams(location.search).get('f');
+    if (want && !want.includes('..')) {
+      box.innerHTML = '<p class="small muted">파일을 여는 중…</p>';
+      const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(want, 60);
+      if (data && !error) {
+        location.href = data.signedUrl;
+        return;
+      }
+      box.innerHTML = '<p class="small muted">그 파일을 찾지 못했습니다. 아래 목록에서 골라 주십시오.</p>';
+    }
+
     try {
       const root = await list('');
       const folders = root.filter((e) => e.id === null);
       const loose = root.filter((e) => e.id !== null);
 
-      box.innerHTML = '';
+      if (!want) box.innerHTML = '';
 
       if (!folders.length && !loose.length) {
         box.innerHTML =

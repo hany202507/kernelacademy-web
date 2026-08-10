@@ -73,7 +73,9 @@ const schema = {
               {d.sources.map((s) => (
                 <li>
                   <strong>{s.label}</strong>
-                  {s.note && <span class="muted"> — {s.note}</span>}
+                  {/* 구분에 줄표를 쓰지 않는다. 출처가 여러 건이면 한 화면에
+                      대시가 그 수만큼 쌓인다. 중점이 한국어 표기 관습에 맞다. */}
+                  {s.note && <span class="muted"> · {s.note}</span>}
                 </li>
               ))}
             </ol>
