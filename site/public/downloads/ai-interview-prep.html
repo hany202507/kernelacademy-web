@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>재무 AI 면접 준비 체크리스트 — Kernel Academy</title>
+<meta name="description" content="재무 면접에서 AI 활용 역량이 무엇으로 갈리는가. 늘 나오던 질문에 내 사례를 얹는 법과, 함부로 넘기지 않는 사람으로 읽히는 말하기를 정리한 체크리스트입니다.">
+<style>
+  :root{
+    --bg:#fcfdfb; --bg-soft:#f1f6ef; --ink:#1a1c19; --ink-2:#53574f; --ink-3:#91968c;
+    --line:#dfe5db; --line-soft:#eaefe7; --accent:#16264a; --accent-2:#2f6fb0; --brand:#3f7350;
+    --warn:#9b3048;
+    --serif:'Noto Serif KR','Nanum Myeongjo',Batang,바탕,Georgia,serif;
+    --sans:'Pretendard Variable',Pretendard,'Malgun Gothic',맑은 고딕,-apple-system,system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){:root{--bg:#14171a;--bg-soft:#1b1f21;--ink:#e9ece7;--ink-2:#a8afa6;--ink-3:#767c74;--line:#2c3235;--line-soft:#232829;--accent:#a8c4e8;--accent-2:#7ea9d8;--brand:#7aa886;--warn:#d98a9d}}
+  :root[data-theme="dark"]{--bg:#14171a;--bg-soft:#1b1f21;--ink:#e9ece7;--ink-2:#a8afa6;--ink-3:#767c74;--line:#2c3235;--line-soft:#232829;--accent:#a8c4e8;--accent-2:#7ea9d8;--brand:#7aa886;--warn:#d98a9d}
+  :root[data-theme="light"]{--bg:#fcfdfb;--bg-soft:#f1f6ef;--ink:#1a1c19;--ink-2:#53574f;--ink-3:#91968c;--line:#dfe5db;--line-soft:#eaefe7;--accent:#16264a;--accent-2:#2f6fb0;--brand:#3f7350;--warn:#9b3048}
+
+  *,*::before,*::after{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.7;padding:2.5rem 1.25rem 4rem}
+  body,h1,h2,h3,h4,p,li,td,th{word-break:keep-all;overflow-wrap:break-word}
+  .sheet{max-width:46rem;margin:0 auto}
+
+  header{border-bottom:2px solid var(--ink);padding-bottom:1.2rem;margin-bottom:1.6rem}
+  .eyebrow{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);margin:0 0 .55rem}
+  h1{font-family:var(--serif);font-size:1.6rem;line-height:1.38;margin:0 0 .6rem;text-wrap:balance}
+  .sub{font-size:.88rem;color:var(--ink-2);margin:0}
+
+  .sec{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:2.6rem 0 .8rem;padding-bottom:.35rem;border-bottom:1px solid var(--line)}
+
+  .howto{display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem;margin-bottom:.9rem}
+  @media(max-width:680px){.howto{grid-template-columns:1fr}}
+  .howto div{background:var(--bg-soft);border:1px solid var(--line-soft);padding:.85rem .9rem;font-size:.82rem;line-height:1.6;color:var(--ink-2)}
+  .howto b.h{display:block;color:var(--ink);font-size:.78rem;margin-bottom:.3rem;letter-spacing:.02em}
+  .why{font-size:.8rem;color:var(--ink-3);border-left:2px solid var(--line);padding-left:.8rem;margin:0 0 1rem}
+  .why b{color:var(--ink-2)}
+
+  .pick{border:1px solid var(--line);padding:1rem 1.1rem .7rem;margin-bottom:1rem}
+  .pick .slot{display:flex;align-items:baseline;gap:.6rem;font-size:.84rem;color:var(--ink-3);margin:0 0 .9rem;padding-bottom:.5rem;border-bottom:1px dashed var(--line)}
+  .pick .slot b{color:var(--ink);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+  .pick .slot .fill{flex:1;border-bottom:1px solid var(--line);height:1.3rem}
+  .cond{display:flex;gap:.55rem;font-size:.85rem;color:var(--ink-2);margin:0 0 .6rem;align-items:baseline}
+  .cond .box{flex:none;width:1rem;height:1rem;border:1.5px solid var(--ink-3);display:inline-block;margin-top:.2rem}
+  .cond b{color:var(--ink)}
+
+  .axis{border:1px solid var(--line);border-top:3px solid var(--accent-2);padding:1.2rem 1.25rem 1rem;margin-bottom:1.5rem}
+  .axis-head{display:flex;align-items:baseline;gap:.6rem;margin-bottom:.25rem}
+  .axis-head .n{font-family:var(--serif);font-size:1.35rem;font-weight:700;color:var(--accent-2);line-height:1}
+  .axis-head h2{font-size:1.05rem;font-weight:700;margin:0;line-height:1.4}
+  .axis .what{font-size:.85rem;color:var(--ink-3);margin:0 0 1rem}
+
+  .ask{font-family:var(--serif);font-size:.97rem;background:var(--bg-soft);border-left:3px solid var(--accent-2);padding:.7rem .9rem;margin:0 0 .8rem}
+  .ask .lbl{display:block;font-family:var(--sans);font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-2);margin-bottom:.3rem}
+  .ask p{margin:0 0 .35rem}
+  .ask p:last-child{margin-bottom:0}
+
+  .probe{font-size:.84rem;line-height:1.65;color:var(--ink-2);margin:0 0 .8rem;padding:.15rem 0 .15rem .85rem;border-left:2px dotted var(--line)}
+  .probe .lbl{display:block;font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin:0 0 .25rem}
+  .probe b{color:var(--ink)}
+  .write{border:1px solid var(--line);border-left:3px solid var(--brand);padding:.75rem .9rem;margin:0 0 .9rem}
+  .write .lbl{font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--brand);margin:0 0 .5rem;display:block}
+  .write .row{display:flex;align-items:baseline;gap:.5rem;margin-bottom:.6rem;font-size:.82rem;color:var(--ink-3)}
+  .write .row:last-child{margin-bottom:0}
+  .write .row span.k{white-space:nowrap;color:var(--ink-2);font-weight:600}
+  .write .row .fill{flex:1;border-bottom:1px solid var(--line);height:1.25rem}
+  .write .row.tall .fill{height:2.5rem}
+
+  table.bars{width:100%;border-collapse:collapse;font-size:.84rem;margin:0 0 .8rem}
+  table.bars td{padding:.42rem .35rem;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  table.bars td.g{width:2.4rem;font-weight:700;text-align:center}
+  table.bars td.g .box{display:block;width:1rem;height:1rem;border:1.5px solid var(--ink-3);margin:.15rem auto 0}
+  .g1{color:var(--ink-3)} .g2{color:var(--accent-2)} .g3{color:var(--brand)} .g4{color:var(--brand)}
+  table.bars tr:last-child td{border-bottom:0}
+  .bars caption{caption-side:top;text-align:left;font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);padding-bottom:.4rem}
+
+  .bar{font-size:.82rem;color:var(--ink-2);background:var(--bg-soft);border:1px solid var(--line-soft);padding:.6rem .8rem;margin:0 0 .8rem}
+  .bar b{color:var(--ink)}
+  .next{font-size:.82rem;color:var(--ink-2);border:1px dashed var(--accent-2);padding:.6rem .8rem;margin:0}
+  .next .lbl{font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-2);margin-right:.45rem}
+  .next b{color:var(--ink)}
+
+  .one{font-family:var(--serif);font-size:1.18rem;line-height:1.55;text-align:center;color:var(--ink);
+       background:var(--bg-soft);border-top:2px solid var(--accent);border-bottom:2px solid var(--accent);
+       padding:1.1rem 1rem;margin:0 0 1rem}
+  .one b{color:var(--accent-2)}
+  .swap{width:100%;border-collapse:collapse;font-size:.85rem;margin:0 0 1rem}
+  .swap td{padding:.5rem .6rem;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  .swap td.x{color:var(--warn);width:46%}
+  .swap td.o{color:var(--brand)}
+  .swap tr:last-child td{border-bottom:0}
+  .core{margin:0 0 1rem;padding:0;list-style:none;font-size:.86rem}
+  .core li{padding:.5rem 0 .5rem .9rem;border-left:2px solid var(--brand);margin-bottom:.5rem;color:var(--ink-2)}
+  .core b{color:var(--ink)}
+
+  .map{border:1px solid var(--line);margin:0 0 1rem}
+  .map .part{display:flex;gap:.85rem;padding:.75rem .95rem;border-bottom:1px solid var(--line-soft);align-items:baseline}
+  .map .part:last-child{border-bottom:0}
+  .map .n2{flex:none;width:2.2rem;font-family:var(--serif);font-size:.95rem;font-weight:700;color:var(--accent-2)}
+  .map .t2{flex:1}
+  .map .t2 b{display:block;font-size:.9rem;color:var(--ink);margin-bottom:.12rem}
+  .map .t2 span{font-size:.79rem;color:var(--ink-3);line-height:1.6}
+  .map .tag{flex:none;font-size:.71rem;color:var(--brand);white-space:nowrap;font-weight:700;letter-spacing:.04em}
+
+  table.wide{width:100%;border-collapse:collapse;font-size:.83rem;margin:0 0 1rem}
+  table.wide th,table.wide td{padding:.5rem .55rem;border-bottom:1px solid var(--line-soft);text-align:left;vertical-align:top}
+  table.wide thead th{border-bottom:1.5px solid var(--ink-2);font-size:.74rem;letter-spacing:.03em}
+  table.wide td.c,table.wide th.c{text-align:center;font-variant-numeric:tabular-nums}
+
+  ol.steps{margin:0 0 1rem;padding-left:1.15rem;font-size:.85rem;color:var(--ink-2)}
+  ol.steps li{margin-bottom:.5rem}
+  ol.steps b{color:var(--ink)}
+
+  footer{margin-top:2.4rem;padding-top:1.1rem;border-top:1px solid var(--line);font-size:.74rem;color:var(--ink-3);line-height:1.6}
+  footer a{color:var(--accent-2)}
+
+  @media print{
+    @page{margin:14mm 12mm}
+    body{padding:0;font-size:10.2pt;background:#fff}
+    :root{--bg:#fff;--bg-soft:#f6f6f4;--ink:#000;--ink-2:#333;--ink-3:#666;--line:#999;--line-soft:#ccc}
+    a{color:#000;text-decoration:none}
+    header{margin-bottom:1rem}
+    .sec,h1,h2{break-after:avoid;page-break-after:avoid}
+    p,li,tr{break-inside:avoid;page-break-inside:avoid;orphans:2;widows:2}
+    .axis,.pick,.map,.write,.one,table,ol.steps{break-inside:avoid;page-break-inside:avoid}
+    .write .fill,.pick .slot .fill{border-bottom-color:#777}
+    .cond .box,table.bars td.g .box{border-color:#555}
+    .no-print{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+
+<header>
+  <p class="eyebrow">Kernel Academy · 무료 배포 자료</p>
+  <h1>재무 AI 면접 준비 체크리스트</h1>
+  <p class="sub">재무 면접에서 AI 활용 역량이 무엇으로 갈리는지를 <b>네 항목과 4점 척도</b>로 정리하고, <b>내 사례를 거기 맞춰 채우는</b> 체크리스트입니다.</p>
+</header>
+
+<p class="sec">무엇이 들어 있나</p>
+
+<div class="howto">
+  <div><b class="h">남겨야 하는 한 문장</b>항목별 점수 위에 있는 것. <b>면접이 끝나고 기억에 남는 건 문장 하나</b>입니다</div>
+  <div><b class="h">항목마다 한 장</b>면접에서 나올 질문, 거기서 꺼낼 것, <b>내 답을 적는 칸</b>, 4점 척도, 점수를 올리는 방법</div>
+  <div><b class="h">남은 시간에 무엇부터</b>내 점수에 따라 오늘·이번 주에 뭘 할지. 대부분 반나절이면 한 칸 오릅니다</div>
+</div>
+
+<p class="why"><b>면접관이 “AI 어떻게 쓰셨어요?”라고 물어줄 거라 기대하지 마십시오.</b> 아직 그렇게 묻는 재무 면접은 많지 않습니다. 실제로 나오는 건 “성장했던 경험”, “어려움을 극복한 경험”, “실수했던 경험” 같은 <b>늘 나오던 질문</b>입니다. 그 질문에 만든 것 이야기를 꺼내는 것이 이 체크리스트의 쓰임입니다.</p>
+
+<p class="sec">미리보기</p>
+
+<p class="sec">면접이 끝났을 때 남아야 하는 것</p>
+
+<p class="why">항목별로 빈칸을 채우기 전에 이걸 먼저 잡으십시오. <b>면접관은 항목별 점수를 기억하지 못합니다.</b> 회의실을 나설 때 남는 건 한 문장입니다.</p>
+
+<p class="one">“AI를 쓸 줄 아는데,<br><b>함부로 넘기지 않는 사람</b>”</p>
+
+<p class="why">재무 면접관이 AI 쓰는 지원자에게 갖는 걱정은 <b>못 쓸 거라는 게 아닙니다.</b> 잘 쓸수록 커지는 걱정이 따로 있습니다 — <b>우리 마감을 흔들어놓지 않을까.</b> 그래서 보여줘야 할 것이 둘이고, 둘 중 하나만 있으면 뽑히지 않습니다. <b>쓸 줄 안다는 것, 그리고 쓰되 통제 안에서 쓴다는 것.</b></p>
+
+<table class="wide">
+  <thead><tr><th>면접관이 확인하려는 것</th><th>내가 줘야 하는 확신</th><th class="c">어디서</th></tr></thead>
+  <tbody>
+    <tr><td>AI를 진짜 쓸 줄 아나</td><td>도구 이름이 아니라 <b>일을 나눠 맡긴 방식</b>으로 답한다</td><td class="c">① ②</td></tr>
+    <tr><td><b>우리 일을 흔들어놓지 않을까</b></td><td><b>한 군데부터, 사람 자리를 남기고</b> 바꾼다</td><td class="c">② ④</td></tr>
+    <tr><td>재무를 안 해봤는데 할 수 있나</td><td>재무의 본질을 짚는다 — <b>정확성 · 마감 · 책임</b></td><td class="c">＋ ③</td></tr>
+    <tr><td>들어와서 오래 갈 사람인가</td><td>만들고 끝내지 않고 <b>쓰이게 만든다</b></td><td class="c">④</td></tr>
+  </tbody>
+</table>
+
+<p class="why">두 번째 줄이 가장 자주 놓치는 자리입니다. <b>“전부 자동화했습니다”는 자랑이 아니라 경고로 들립니다.</b> 재무에서는 통제를 잃은 설계로 읽히기 때문입니다.</p>
+
+<p class="sec">같은 말인데 완전히 다르게 들리는 것</p>
+
+<table class="swap">
+  <tbody>
+    <tr><td class="x">“전부 자동으로 돌아갑니다”</td><td class="o">“이 단계는 <b>일부러 사람이 확인하게</b> 뒀습니다”</td></tr>
+    <tr><td class="x">“지금 방식이 비효율적이라”</td><td class="o">“지금 하시는 걸 <b>그대로 두고 이 한 단계만</b> 붙였습니다”</td></tr>
+    <tr><td class="x">“AI가 다 해줍니다”</td><td class="o">“AI가 낸 걸 실제 자료랑 맞춰봤더니 <b>몇 건이 어긋났습니다</b>”</td></tr>
+    <tr><td class="x">“빠르게 바꿔보고 싶습니다”</td><td class="o">“<b>제일 손 많이 가는 한 건부터</b> 보고 싶습니다”</td></tr>
+  </tbody>
+</table>
+
+<p class="why">왼쪽과 오른쪽은 같은 일을 말하고 있습니다. 다른 건 <b>이 사람이 우리 마감을 안전하게 다룰까</b>에 대한 답입니다. 왼쪽은 그 답을 주지 못합니다.</p>
+
+<p class="sec">전문에 들어 있는 것</p>
+
+<div class="map">
+  <div class="part"><span class="n2">1부</span><span class="t2"><b>면접이 끝났을 때 남아야 하는 것</b><span>남길 한 문장, 면접관이 확인하려는 네 가지, 재무의 본질 네 줄 — <b>위 미리보기가 이 부의 앞부분입니다</b></span></span><span class="tag">방향</span></div>
+  <div class="part"><span class="n2">2부</span><span class="t2"><b>무엇을 들고 갈 것인가</b><span>사례 고르는 네 조건. 들고 갈 게 없다면 열흘로 하나 만드는 코스</span></span><span class="tag">재료</span></div>
+  <div class="part"><span class="n2">3부</span><span class="t2"><b>이 회사를 어떻게 읽을 것인가</b><span>비즈니스 모델 → 북극성 → 재무 오퍼레이션 → 아픈 데. 지표는 그 가설을 확인하는 자리</span></span><span class="tag">사전조사</span></div>
+  <div class="part"><span class="n2">4부</span><span class="t2"><b>항목마다 빈칸 한 장</b><span>① 맥락 설정력 · ＋ 안 해본 일 · ② 분해력 · ③ 검증력 · ④ 지속 운영력</span></span><span class="tag">채우기</span></div>
+  <div class="part"><span class="n2">5부</span><span class="t2"><b>어떻게 말할 것인가</b><span>보여주는 다섯 단계, AI를 얼마나 썼다고 말할지, 남은 시간에 무엇부터</span></span><span class="tag">전달</span></div>
+</div>
+
+<div class="bar">
+  <p style="margin:0 0 .5rem"><b>전문은 <a href="/join">로그인</a>하시면 받으실 수 있습니다. 무료입니다.</b></p>
+  <p style="margin:0">A4에 맞춰 조판돼 있어 <b>인쇄해서 손으로 채우셔도 됩니다.</b> 배포는 출처만 남겨 주세요.</p>
+</div>
+
+<footer>
+  <p><b>재무 조직에서 사람을 뽑고 일을 맡겨 온 판단을 항목과 척도로 옮겼습니다.</b> 회계사 15년 — 감사법인, 로펌, 기업 재무. 왜 이렇게 나눴는지는 「재무 포트폴리오가 없어도 됩니다」(<a href="/insights/ai-interview-what-counts">/insights/ai-interview-what-counts</a>)에 있습니다.<br>
+  <b>알아두실 것</b> — 여기 실린 항목과 척도는 저희가 제안하는 기준이고, <b>지원하시는 회사가 실제로 쓰는 평가표가 아닙니다.</b> 질문도 자주 나오는 형태를 정리한 것이지 그대로 나온다는 뜻은 아닙니다. 참고용이며 채용 결과를 보장하지 않습니다.<br>
+  <b>근거</b> — Sackett, Zhang, Berry &amp; Lievens(2022), <i>Journal of Applied Psychology</i> · Anthropic, <i>AI Fluency Framework</i>(Dakan·Feller, CC BY-NC-SA 4.0) · Anthropic, <i>Economic Index</i>(2026-06-26). 전부 2026-08-08 확인.<br>
+  <b>출처</b> — Kernel Academy · <a href="https://kernelacademy.io">kernelacademy.io</a> · © 2026 Kernel Academy</p>
+</footer>
+
+</div>
+</body>
+</html>
