@@ -93,9 +93,6 @@ const TABS = [{ key: 'all', label: '전체', n: posts.length }, ...갈래.map((g
                   <p class="post-lede">{p.data.lede}</p>
                   <p class="post-meta">
                     <time datetime={fmt(p.data.published)} class="num">{fmt(p.data.published)}</time>
-                    {p.data.sources.length > 0 && (
-                      <span class="num">출처 {p.data.sources.length}건</span>
-                    )}
                   </p>
                 </a>
               </li>
@@ -108,7 +105,9 @@ const TABS = [{ key: 'all', label: '전체', n: posts.length }, ...갈래.map((g
             .filter((g) => g.posts.length === 0)
             .map((g) => (
               <p class:list={['empty', `empty--${g.key}`]}>
-                <strong>{g.label}</strong>은 준비 중입니다. 첫 글을 쓰는 대로 이 자리에 올립니다.
+                {/* 조사를 붙이지 않는다. 갈래 이름의 받침이 제각각이라
+                    「은/는」을 하드코딩하면 「재무AX 성공사례은」이 된다. */}
+                <strong>{g.label}</strong> — 아직 글이 없습니다. 첫 글을 쓰는 대로 이 자리에 올립니다.
               </p>
             ))
         }
