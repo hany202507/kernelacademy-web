@@ -2,8 +2,13 @@
 /**
  * 글 카드·머리말의 사진.
  *
- * 흑백으로 깔고 세이지를 곱해 얹는다(듀오톤). 출처가 제각각인 스톡 사진을
- * 그대로 쓰면 색이 따로 놀아 지면이 흩어지기 때문이다.
+ * 채도를 낮추고 세이지를 옅게 곱한다. 출처가 제각각인 사진을 그대로 쓰면
+ * 파란 공장과 갈색 서랍장이 나란히 서서 색이 따로 놀기 때문이다.
+ *
+ * 2026-08-12: 완전 흑백(grayscale 1 + 세이지 0.17)에서 지금 값으로 낮췄다.
+ * 흑백은 어두운 사진을 거의 검게 죽였고, 무엇보다 지면이 삭막해 보였다.
+ * 색을 살리되 묶음으로는 보이게 하는 선을 여기서 잡았다.
+ *
  * 사진이 없는 글은 빈 지면으로 두고 레이아웃은 유지한다.
  */
 interface Props {
@@ -52,8 +57,8 @@ const { src, alt = '', badge, wide = false, eager = false } = Astro.props;
     height: 100%;
     object-fit: cover;
     display: block;
-    /* 흑백으로 낮춘 뒤 아래 세이지 층과 곱해져 듀오톤이 된다 */
-    filter: grayscale(1) contrast(1.04) brightness(1.03);
+    /* 채도만 낮춘다. 아래 세이지 층이 옅게 곱해져 색조를 모은다 */
+    filter: grayscale(0.35) contrast(1.03) brightness(1.02);
   }
 
   /* 세이지 층 — 세 장이 한 세트로 보이게 하는 장치 */
@@ -62,7 +67,7 @@ const { src, alt = '', badge, wide = false, eager = false } = Astro.props;
     position: absolute;
     inset: 0;
     background: var(--brand);
-    opacity: 0.17;
+    opacity: 0.08;
     mix-blend-mode: multiply;
     pointer-events: none;
   }

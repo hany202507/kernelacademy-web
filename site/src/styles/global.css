@@ -206,6 +206,13 @@ table :where(th, td):last-child { padding-right: 1.2em; }
   text-wrap: pretty;
 }
 
+/* ── 문장 단위 줄바꿈 ──
+   줄이 문장 중간에서 끊기면("내려받아 혼자 / 공부하시는") 눈이 한 번 되돌아온다.
+   문장마다 이 클래스를 씌우면 브라우저가 문장 사이를 먼저 끊고, 한 문장이 한 줄에
+   들어가지 않을 때만 그 안에서 끊는다. <br> 로 고정하지 않는 이유가 이것이다 —
+   좁은 화면에서는 문장 안에서도 끊겨야 하고, br 은 그 판단을 막는다. */
+.s { display: inline-block; }
+
 /* UI 서체 계열 — 라벨·캡션·버튼·배지 */
 .eyebrow {
   font-family: var(--sans);
@@ -259,7 +266,7 @@ table :where(th, td):last-child { padding-right: 1.2em; }
   background-image:
     linear-gradient(to right, rgb(63 115 80 / 7%) 1px, transparent 1px),
     linear-gradient(to bottom, rgb(63 115 80 / 7%) 1px, transparent 1px);
-  background-size: 46px 46px;
+  background-size: 15.33px 15.33px;
   background-position: center top;
 }
 

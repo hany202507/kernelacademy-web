@@ -28,7 +28,7 @@ const schema = {
 
 <Base
   title="워크플로우"
-  description="세무·회계결산·자금·감사대응·내부통제·보고·예산관리 — 업무 단위로 기능을 조립하는 7개 워크플로와 전체 지도."
+  description="세무·회계결산·자금·감사대응·내부통제·보고·예산관리. 업무 단위로 기능을 조립하는 일곱 워크플로와 전체 지도."
   schema={schema}
 >
   <section class="section section--tint pagehead">
@@ -36,9 +36,9 @@ const schema = {
       <p class="eyebrow">워크플로우</p>
       <h1>내 업무에서는 이렇게 조립합니다</h1>
       <p class="lede">
-        실무자는 부가세 매입세액 불공제, 결산 대사처럼 업무 이름으로 일을 기억합니다.
-        R이나 V 같은 기능 이름으로 기억하지 않습니다. 그래서 기능 축과 나란히
-        업무 축을 하나 더 두었습니다.
+        <span class="s">실무자는 부가세 매입세액 불공제, 결산 대사처럼 업무 이름으로 일을 기억합니다.</span>
+        <span class="s">리서치나 검증 같은 기능 이름으로 기억하지 않습니다.</span>
+        <span class="s">그래서 기능별 정리와 함께 업무별 정리를 하나 더 두었습니다.</span>
       </p>
     </div>
   </section>
@@ -48,8 +48,8 @@ const schema = {
     <div class="prose-wide">
       <h2 class="lead-h">업무 일곱 갈래</h2>
       <p class="lede">
-        각 항목을 펼치면 어느 기능이 어떤 순서로 배치되는지 확인할 수 있습니다.
-        동일한 기능이라도 업무에 따라 수행 내용이 달라집니다.
+        <span class="s">펼치시면 어느 기능이 어떤 순서로 들어가는지 보실 수 있습니다.</span>
+        <span class="s">같은 기능이라도 업무에 따라 하는 일이 달라집니다.</span>
       </p>
     </div>
 
@@ -89,16 +89,19 @@ const schema = {
     <div class="wrap">
       <h2 class="lead-h">전체 지도</h2>
       <p class="lede narrow">
-        가로축이 기능, 세로축이 업무입니다. 각 칸이 교재 한 단위에 대응하며,
-        <strong>미공개 구간은 미공개 상태로 표시합니다.</strong>
+        <span class="s">가로가 기능, 세로가 업무입니다.</span>
+        <span class="s">
+          표의 칸 하나가 교재 한 단위이고,
+          <strong>아직 열지 않은 것은 그대로 표시했습니다.</strong>
+        </span>
       </p>
       <div class="matrix-wrap">
         <Matrix />
       </div>
 
       <p class="closing narrow">
-        검토가 끝난 구간부터 차례로 엽니다. 교육위원 검토를 받기로 해 놓고 먼저
-        공개하면 그 절차가 형식이 됩니다.
+        검토를 마친 부분부터 차례로 엽니다. 검토를 받기로 해 놓고 먼저 내보내면
+        그 절차가 형식에 그칩니다.
         → <a href="/about/committee">교육위원회</a>
       </p>
     </div>

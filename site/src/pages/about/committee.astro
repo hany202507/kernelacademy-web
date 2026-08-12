@@ -29,15 +29,16 @@ const seats = Array.from({ length: SEATS }, (_, i) => MEMBERS[i] ?? {});
 
 <Base
   title="교육위원회"
-  description="각자의 방식으로는 부족합니다. 검증된 표준 커리큘럼이 필요하다는 데 동의한 분들이, 이 커리큘럼을 실제로 깎아냅니다."
+  description="각자의 방식만으로는 부족합니다. 검증된 표준 커리큘럼이 필요하다는 데 동의한 분들이 이 커리큘럼을 직접 깎아냅니다."
 >
   <section class="section section--tint pagehead">
     <div class="prose">
       <p class="eyebrow">교육위원회</p>
-      <h1>개인의 숙련은 표준을 대신하지 못합니다</h1>
+      <h1>개인의 숙련만으로는 기준이 서지 않습니다</h1>
       <p class="lede">
-        지금 재무 현장의 AI 활용은 개인 역량에 기대고 있습니다. 담당자마다 방식이 다르고,
-        옆자리로 넘어가지 않으며, 무엇보다 그 결과가 맞는지 판단할 공통 기준이 없습니다.
+        <span class="s">지금 재무 현장의 AI 활용은 개인 역량에 기대고 있습니다.</span>
+        <span class="s">담당자마다 방식이 다르고, 옆 사람에게 전해지지 않습니다.</span>
+        <span class="s">결과가 맞는지 판단할 공통 기준도 없습니다.</span>
       </p>
     </div>
   </section>
@@ -45,19 +46,18 @@ const seats = Array.from({ length: SEATS }, (_, i) => MEMBERS[i] ?? {});
   <section class="section">
     <div class="prose">
       <p>
-        개별 효율화로도 담당자 개인이 일을 처리하는 속도는 빨라집니다. 다만 그 방식이
-        다음 주기에도 같은 결과를 내는지, 담당자가 바뀌어도 넘어가는지, 감사에서 설명이
-        되는지는 어느 것도 보장되지 않습니다. 1원의 오차도 허용되지 않는 직무에서는
-        오래 갈 수 없는 상태입니다.
+        각자 효율을 높이면 담당자 개인이 일을 처리하는 속도는 빨라집니다. 다만 그 방식이
+        다음 주기에도 같은 결과를 내는지, 담당자가 바뀌어도 이어지는지, 감사에서 설명이
+        되는지는 확인되지 않습니다. 숫자에 책임이 따르는 업무에서 오래 유지하기 어려운
+        방식입니다.
       </p>
       <p>
-        그래서 표준이 필요합니다. 잘 만든 커리큘럼 하나로는 부족하고, 서로 다른 자리에
-        있는 전문가가 들여다보고 덜어낸 커리큘럼이어야 합니다. 만든 사람 혼자 보면
-        무엇이 빠졌는지 끝내 보이지 않습니다.
+        그래서 기준이 필요합니다. 잘 만든 커리큘럼 하나로는 부족합니다. 일하는 곳이
+        서로 다른 전문가가 들여다보고 덜어낸 것이라야 합니다.
       </p>
       <p>
         교육위원회는 이 판단에 동의하는 전문가로 꾸립니다. 위원께서 원하시면 커리큘럼의
-        어느 구간이든 덜어낼 수 있습니다.
+        어느 부분이든 덜어낼 수 있습니다.
       </p>
     </div>
   </section>
@@ -65,7 +65,7 @@ const seats = Array.from({ length: SEATS }, (_, i) => MEMBERS[i] ?? {});
   <section class="section section--soft">
     <div class="prose-wide">
       <h2 class="lead-h">위원 <span class="num">{SEATS}</span>인</h2>
-      <p class="lede intro">위원께서 참여하신 이유를 직접 적어 주신 글입니다.</p>
+      <p class="lede intro"><span class="s">위원께서 참여하신 이유를 직접 적어 주신 글입니다.</span></p>
 
       <div class="members">
         {

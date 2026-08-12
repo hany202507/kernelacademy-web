@@ -23,16 +23,16 @@ const schema = {
 
 <Base
   title="프로그램 소개"
-  description="학습단계 셋과, 이 커리큘럼이 실제로 쓰이고 있는 자리."
+  description="학습단계 셋과, 이 커리큘럼을 실제로 쓰고 있는 곳."
   schema={schema}
 >
   <section class="section section--tint pagehead">
     <div class="prose">
       <p class="eyebrow">교육프로그램</p>
-      <h1>일을 핵심기능별로 쪼개고, 내 업무로 다시 조립합니다</h1>
+      <h1>일을 기능별로 쪼개고, 내 업무로 다시 조립합니다</h1>
       <p class="lede">
-        이 커리큘럼이 정하려는 것은 경계입니다. 어디까지를 AI에 맡기고 어디부터는
-        사람이 붙잡아야 하는지를, 재무 업무의 말로 적어 두었습니다.
+        <span class="s">이 커리큘럼이 정하려는 것은 경계입니다.</span>
+        <span class="s">어디까지 AI에 맡기고 어디부터 사람이 직접 해야 하는지를 재무 업무의 말로 적었습니다.</span>
       </p>
     </div>
   </section>
@@ -42,8 +42,8 @@ const schema = {
     <div class="wrap">
       <h2 class="lead-h">학습단계</h2>
       <p class="lede narrow">
-        동일한 커리큘럼을 학습 시간과 깊이로 구분한 것입니다. 단계가 올라가도 다루는
-        기능은 동일하며, 직접 제작하는 산출물의 양이 달라집니다.
+        <span class="s">같은 커리큘럼을 학습 시간과 깊이로 나눈 것입니다.</span>
+        <span class="s">단계가 올라가도 다루는 기능은 같고, 직접 만드는 산출물의 양이 달라집니다.</span>
       </p>
 
       <div class="grid grid--3 tiers">
@@ -60,10 +60,10 @@ const schema = {
       </div>
 
       <div class="rhythm-wrap">
-        <h3>회차마다 작동하는 결과물 하나가 남습니다</h3>
+        <h3>회차마다 작동하는 결과물이 하나씩 남습니다</h3>
         <p class="narrow">
-          모든 단계에서 회차당 3.5시간을 동일한 구성으로 운영합니다. 세종대학교 과정에서
-          검증된 형식이며, <strong>실습 데이터는 실제 업무 규모로 제공합니다.</strong>
+          모든 단계에서 회차당 3.5시간을 같은 구성으로 운영합니다. 세종대학교 과정에서
+          확인한 형식이며, <strong>실습 데이터는 실제 업무 규모로 드립니다.</strong>
         </p>
         <ol class="rhythm">
           {
@@ -77,8 +77,9 @@ const schema = {
           }
         </ol>
         <p class="small muted narrow">
-          예: 통장 거래 3,842행 + 법인카드 181건 + 거래처 마스터 452건으로 구성한 결산 케이스,
-          공개데이터 기반 기업분석 케이스, 클라우드 데이터웨어하우스 연동 실습.
+          예를 들어 통장 거래 3,842행에 법인카드 181건, 거래처 마스터 452건을 얹은 결산
+          케이스, 공개데이터로 하는 기업분석 케이스, 클라우드 데이터웨어하우스 연동 실습이
+          있습니다.
         </p>
       </div>
     </div>
@@ -90,15 +91,16 @@ const schema = {
       <div class="watch-inner">
         <div>
           <p class="eyebrow">지금 볼 수 있는 것</p>
-          <h2 class="lead-h">유튜브 「{YOUTUBE.name}」</h2>
+          <h2 class="lead-h">유튜브 {YOUTUBE.name}</h2>
           <p class="lede">
-            커리큘럼 자료가 열리기 전이라도, 실무에 어떻게 적용되는지는 지금 보실 수
-            있습니다. <strong>결산 전표 자동화·회계기준 검토·리서치 자동화</strong>를
-            실제로 돌려 보이는 시연 영상입니다.
+            <span class="s">커리큘럼 자료가 열리기 전이라도 실무에 어떻게 적용되는지는 지금 보실 수 있습니다.</span>
+            <span class="s">
+              <strong>결산 전표 자동화와 회계기준 검토, 리서치 자동화</strong>를 실제로 돌려 보이는 시연 영상입니다.
+            </span>
           </p>
           <p class="small muted">
-            커리큘럼의 처리(P)·검증(V)·리서치(R) 기능이 실제 업무에서 어떤 모습인지
-            보여 주는 자리입니다. Kernel Academy가 운영합니다.
+            커리큘럼의 처리와 검증, 리서치 기능이 실제 업무에서 어떤 모습인지 보여
+            드립니다. Kernel Academy가 운영합니다.
           </p>
           <p class="watch-cta">
             <a class="btn" href={YOUTUBE.url} rel="noopener">채널 보기</a>
@@ -123,15 +125,15 @@ const schema = {
           <p class="eyebrow">기능별 훈련</p>
           <p class="nc-t">일을 무엇으로 쪼개는가</p>
           <p class="small muted">
-            여섯 기능마다 AI의 몫과 사람의 몫을 구분해 규정합니다. 이 구분이 본 커리큘럼의
-            핵심 설계입니다.
+            여섯 기능마다 AI가 할 일과 사람이 할 일을 나눠 두었습니다. 이 구분이
+            커리큘럼의 중심입니다.
           </p>
         </a>
         <a class="card nextcard" href="/program/workflows">
           <p class="eyebrow">워크플로우</p>
           <p class="nc-t">내 업무에서는 이렇게 조립한다</p>
           <p class="small muted">
-            세무·결산·자금 등 일곱 업무 단위의 조립 순서와, 기능 × 업무 전체 지도.
+            세무와 결산, 자금 등 일곱 업무의 조립 순서와 기능별 전체 지도.
           </p>
         </a>
       </div>

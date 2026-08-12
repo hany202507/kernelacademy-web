@@ -1,8 +1,18 @@
 ---
+import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Matrix from '../components/Matrix.astro';
 import PersonSlot from '../components/PersonSlot.astro';
-import { SITE } from '../data/site';
+import PostCover from '../components/PostCover.astro';
+import Figure from '../components/Figure.astro';
+import EmptyCells from '../components/figures/EmptyCells.astro';
+import { SITE, CATEGORIES } from '../data/site';
+
+/** 최근 글 3편. 홈에 사진이 들어오는 유일한 자리이자, 블로그로 가는 길이기도 하다. */
+const recent = (await getCollection('insights'))
+  .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf())
+  .slice(0, 3);
+const day = (d: Date) => d.toISOString().slice(0, 10);
 
 const schema = {
   '@context': 'https://schema.org',
@@ -22,8 +32,8 @@ const schema = {
     <div class="wrap">
       <h1>재무 AI 표준 커리큘럼.<br />전부 무료입니다.</h1>
       <p class="lede hero-sub">
-        커리큘럼과 강의자료, 실습 데이터를 모두 공개합니다.
-        한 사람이 더 배운다고 해서 만드는 쪽 비용이 늘지는 않습니다.
+        <span class="s">커리큘럼과 강의자료, 실습 데이터를 모두 공개합니다.</span>
+        <span class="s">내려받아 혼자 공부하시는 데에는 비용이 들지 않습니다.</span>
       </p>
       <div class="btn-row">
         <a class="btn" href="/program">교육프로그램 보기</a>
@@ -36,18 +46,19 @@ const schema = {
   <section class="section section--soft">
     <div class="wrap">
       <p class="eyebrow">커리큘럼 구조</p>
-      <h2>재무 업무를 여섯 기능으로 분해하고, 일곱 워크플로로 재조립합니다</h2>
+      <h2>재무 업무를 여섯 기능으로 나누고, 일곱 갈래 업무로 다시 묶습니다</h2>
       <p class="lede narrow">
-        기능 축은 AI에 맡길 일과 맡기지 않을 일의 경계를 가릅니다.
-        워크플로 축은 그 기능들을 실제 업무 순서대로 다시 잇습니다.
-        두 축이 만나는 칸 하나가 실습 한 단위입니다.
+        <span class="s">먼저 재무 업무를 여섯 기능으로 나눕니다.</span>
+        <span class="s">AI에 맡길 일과 사람이 맡을 일이 여기서 갈립니다.</span>
+        <span class="s">다음으로 그 기능을 세무나 결산처럼 실제 일하는 순서대로 늘어놓습니다.</span>
+        <span class="s">기능 하나와 업무 하나가 만나면 실습 한 단위가 됩니다.</span>
       </p>
       <div class="mt">
         <Matrix />
       </div>
       <p class="small muted after">
-        본문은 교육위원 검토가 끝난 구간부터 올립니다. 검토를 받겠다고 해 놓고 먼저
-        공개하면 앞뒤가 맞지 않습니다. → <a href="/program">교육프로그램</a>
+        본문은 교육위원 검토를 마친 부분부터 올립니다. 검토를 받기로 해 놓고 먼저
+        내보낼 수는 없습니다. → <a href="/program">교육프로그램</a>
       </p>
     </div>
   </section>
@@ -57,21 +68,29 @@ const schema = {
     <div class="wrap two">
       <div>
         <p class="eyebrow">설계 근거</p>
-        <h2>기존 교육과정에 공통으로 부재한 세 영역</h2>
+        <h2>기존 교육과정에서 공통으로 빠져 있던 세 가지</h2>
       </div>
       <div class="narrow">
         <p>
-          해외 주요 과정 12개를 훑어보니 세 가지가 공통으로 빠져 있었습니다.
-          결산·세무·감사 같은 제도권 회계 실무에 붙는 모듈, 대사와 재계산으로
-          산출물을 확인하는 방법, 그리고 한국 제도 맥락입니다.
+          해외 주요 과정 12개를 살펴봤습니다. 세 가지가 공통으로 빠져 있었습니다.
+          결산·세무·감사 같은 회계 실무에 맞춘 모듈, 대사와 재계산으로 결과를
+          확인하는 절차, 그리고 한국 제도에 대한 설명입니다.
         </p>
         <p>
-          도구 사용법을 다루는 과정은 이미 많습니다. 다만 1원의 오차도 허용되지 않는
-          직무에서는 그것만으로 업무에 들일 수 없습니다. 검증(V)을 독립된 기능으로
-          따로 세운 까닭입니다.
+          도구 사용법을 가르치는 과정은 이미 많습니다. 다만 재무 업무는 나온 결과가
+          맞는지 확인하지 못하면 쓸 수 없습니다. 검증을 별도의 기능으로 세운
+          이유입니다.
         </p>
         <p><a href="/insights">조사 자료 보기 →</a></p>
       </div>
+    </div>
+    <div class="prose fig-slot">
+      <Figure
+        label="조사"
+        caption="해외 주요 과정 12개를 훑어 본 결과. 분석과 보고는 어디서나 다루지만, 데이터 확보와 제도권 실무, 검증은 공통으로 비어 있었습니다."
+      >
+        <EmptyCells />
+      </Figure>
     </div>
   </section>
 
@@ -81,8 +100,8 @@ const schema = {
       <p class="eyebrow">운영 체계</p>
       <h2>설계와 검증을 분리합니다</h2>
       <p class="lede narrow">
-        만든 사람이 자기 커리큘럼을 스스로 점검하는 것으로는 부족합니다.
-        그래서 교육위원회를 따로 둡니다.
+        <span class="s">커리큘럼을 만든 사람이 스스로 점검하는 것으로는 부족합니다.</span>
+        <span class="s">검증은 교육위원회에 맡깁니다.</span>
       </p>
       <div class="grid grid--2 who">
         <div class="card">
@@ -90,15 +109,16 @@ const schema = {
           <PersonSlot
             name="박상정"
             affiliation="공인회계사"
-            note="KICPA AI 자문위원(2026.5 위촉) · 세종대 AI·재무 출강"
+            note="KICPA AI전문 교육, 세종대 AI재무분석 출강"
+            photo="/images/person-hany.png"
           />
         </div>
         <div class="card">
           <p class="eyebrow">검증</p>
           <p class="pending"><strong>교육위원회 (구성 중)</strong></p>
           <p class="small muted">
-            위원께는 의견을 여쭙는 데서 그치지 않고, 커리큘럼의 어느 구간이든
-            덜어낼 수 있는 권한을 드립니다. 정원 7인.
+            의견을 여쭙는 데서 그치지 않습니다. 커리큘럼의 어느 부분이든 덜어낼
+            권한을 함께 드립니다. 정원은 7인입니다.
             <a href="/about/committee">교육위원회 →</a>
           </p>
         </div>
@@ -112,25 +132,55 @@ const schema = {
       <p class="eyebrow">지향</p>
       <div class="aim-grid">
         <div class="aim">
-          <p class="aim-t">기업은 AI로 <strong>제대로</strong> 성장하고</p>
+          <p class="aim-t">조직에는 <strong>운영</strong>으로 남고</p>
           <p class="small muted">
-            시연으로 끝나는 도입은 이미 많습니다. 주기가 바뀌어도 같은 품질로 돌아가고,
-            담당자가 바뀌어도 그대로 굴러가는 상태까지 가야 합니다.
+            시연에서 끝나는 도입은 이미 많습니다. 결산 주기가 바뀌어도 같은 품질이
+            나오고, 담당자가 바뀌어도 이어지는 데까지 가야 합니다.
           </p>
         </div>
         <div class="aim">
-          <p class="aim-t">개인은 일의 <strong>진짜 즐거움</strong>을 찾도록</p>
+          <p class="aim-t">개인에게는 <strong>판단할 시간</strong>이 늘도록</p>
           <p class="small muted">
-            옮겨 적고 대조하는 일이 자동화되면 사람 손에는 판단과 설계가 남습니다.
-            이 직업에서 제일 어려운 부분이고, 그래서 제일 오래 남습니다.
+            옮겨 적고 대조하는 일이 줄면 판단과 설계가 남습니다.
+            회계에서 가장 어려운 부분이 그쪽입니다.
           </p>
         </div>
       </div>
       <p class="aim-note small">
-        둘은 결국 같은 일입니다. 설계할 줄 아는 사람이 늘면 조직에서는 운영이
-        자리를 잡고, 개인에게는 하는 일의 성격이 바뀝니다.
+        두 가지는 같은 일의 양면입니다. 업무를 설계할 줄 아는 사람이 늘면 조직에서는
+        한번 만든 방식이 다음 주기에도 그대로 돌아가고, 개인은 하는 일의 성격이 바뀝니다.
         <a href="/about">우리는 누구인가 →</a>
       </p>
+    </div>
+  </section>
+
+  <!-- 최근 글 -->
+  <section class="section recent">
+    <div class="wrap">
+      <div class="recent-head">
+        <div>
+          <p class="eyebrow">블로그</p>
+          <h2 class="lead-h">최근에 쓴 글</h2>
+        </div>
+        <a class="more" href="/insights">전체 보기 →</a>
+      </div>
+      <ul class="posts">
+        {
+          recent.map((p) => (
+            <li>
+              <a href={`/insights/${p.id}`}>
+                <PostCover src={p.data.cover} alt={p.data.coverAlt} />
+                <p class="p-cat">{CATEGORIES[p.data.category].label}</p>
+                <p class="p-title">{p.data.title}</p>
+                <p class="p-lede small muted">{p.data.lede}</p>
+                <time datetime={day(p.data.published)} class="p-date num small">
+                  {day(p.data.published)}
+                </time>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
     </div>
   </section>
 
@@ -140,8 +190,10 @@ const schema = {
         <div>
           <h2 class="lead-h">자료가 열리면 알려드립니다</h2>
           <p class="lede">
-            열람에는 가입이 필요하지 않습니다. 리터러시 12시간은 <strong>9월</strong>,
-            실무 24시간은 <strong>10월</strong>에 공개됩니다.
+            <span class="s">읽는 데에는 가입이 필요하지 않습니다.</span>
+            <span class="s">
+              리터러시 12시간은 <strong>9월</strong>, 실무 24시간은 <strong>10월</strong>에 공개합니다.
+            </span>
           </p>
         </div>
         <a class="btn" href="/join">가입하기</a>
@@ -193,6 +245,38 @@ const schema = {
   .aim-t strong { font-weight: 600; }
   .aim p:last-child { margin-bottom: 0; }
   .aim-note { margin: 2.5rem 0 0; max-width: 44rem; color: var(--ink-2); }
+
+  /* 도해는 본문 폭에 맞춰 아래로 붙인다 — 두 단 배치를 흔들지 않는다 */
+  .fig-slot { margin-top: 0.5rem; }
+  .fig-slot :global(.fig) { margin-bottom: 0; }
+
+  /* 최근 글 — 홈에서 사진이 들어오는 유일한 자리 */
+  .recent-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    flex-wrap: wrap;
+  }
+  .recent-head .lead-h { margin: 0; }
+  .more { font-family: var(--sans); font-size: 0.9rem; font-weight: 600; flex: none; }
+
+  .posts { list-style: none; margin: 2rem 0 0; padding: 0; display: grid; gap: 1.6rem; }
+  @media (min-width: 50rem) { .posts { grid-template-columns: repeat(3, 1fr); } }
+  .posts li { margin: 0; }
+  .posts a { text-decoration: none; color: inherit; display: block; }
+  .posts a:hover .p-title { text-decoration: underline; text-underline-offset: 3px; }
+  .p-cat {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--brand);
+    margin: 0.9rem 0 0.3rem;
+  }
+  .p-title { font-size: 1.08rem; font-weight: 600; line-height: 1.5; margin: 0 0 0.4rem; }
+  .p-lede { margin: 0 0 0.5rem; }
+  .p-date { color: var(--ink-3); font-family: var(--sans); }
 
   .join-band .lead-h { margin-top: 0; }
   .jb { display: flex; flex-wrap: wrap; gap: 1.5rem 2.5rem; align-items: center; justify-content: space-between; }
