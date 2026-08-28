@@ -27,9 +27,28 @@ const schema = {
   author: { '@type': 'Person', name: '박상정' },
   publisher: { '@type': 'Organization', name: SITE.name, url: SITE.url },
 };
+
+/**
+ * FAQPage — 검색·AI 답변이 통째로 인용해 가는 자리다.
+ * frontmatter 의 faq 가 원본이고 아래 섹션과 이 구조화데이터가 같은 것을 읽는다.
+ */
+const faqSchema =
+  d.faq.length > 0
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: d.faq.map((f) => ({
+          '@type': 'Question',
+          name: f.q,
+          acceptedAnswer: { '@type': 'Answer', text: f.a },
+        })),
+      }
+    : null;
+
+const schemas = faqSchema ? [schema, faqSchema] : schema;
 ---
 
-<Base title={d.title} description={d.lede} schema={schema} image={d.cover}>
+<Base title={d.title} description={d.lede} schema={schemas} image={d.cover}>
   <section class="section section--tint pagehead">
     <div class="prose">
       <p class="eyebrow">
@@ -64,6 +83,22 @@ const schema = {
       <div class="body">
         <Content components={{ PhaseTimeline }} />
       </div>
+
+      {
+        d.faq.length > 0 && (
+          <section class="faq">
+            <h2>자주 받는 질문</h2>
+            <dl>
+              {d.faq.map((f) => (
+                <>
+                  <dt>{f.q}</dt>
+                  <dd>{f.a}</dd>
+                </>
+              ))}
+            </dl>
+          </section>
+        )
+      }
 
       {
         d.sources.length > 0 && (
@@ -120,6 +155,20 @@ const schema = {
   }
   .body :global(h2) { scroll-margin-top: 5rem; }
   .body :global(img) { max-width: 100%; height: auto; }
+
+  .faq { margin-top: 3.5rem; }
+  .faq > h2 { font-size: 1.35rem; margin-bottom: 1.25rem; }
+  .faq dl { margin: 0; }
+  .faq dt {
+    font-weight: 600;
+    color: var(--ink);
+    margin-top: 1.6rem;
+    padding-top: 1.6rem;
+    border-top: 1px solid var(--line-soft);
+    line-height: 1.5;
+  }
+  .faq dt:first-of-type { margin-top: 0; padding-top: 0; border-top: 0; }
+  .faq dd { margin: 0.55rem 0 0; color: var(--ink-2); line-height: 1.75; }
 
   .sources {
     margin-top: 3.5rem;

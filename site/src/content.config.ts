@@ -51,6 +51,12 @@ const insights = defineCollection({
     coverAlt: z.string().optional(),
     /** 본문 하단 출처 블록. 조사일이 붙은 문서가 근거로 말한다는 신호가 된다. */
     sources: z.array(z.object({ label: z.string(), note: z.string().optional() })).default([]),
+    /**
+     * 자주 받는 질문. 본문 아래에 렌더링되고 동시에 FAQPage 구조화데이터로 나간다.
+     * 본문에 Q&A 를 또 쓰지 않는다 — 두 군데 두면 다음 개정에서 갈라진다.
+     * 답은 인용될 것을 전제로 한 문단 단언형으로 쓴다(AI 답변 인용 = AEO).
+     */
+    faq: z.array(z.object({ q: z.string(), a: z.string() })).default([]),
   }),
 });
 
