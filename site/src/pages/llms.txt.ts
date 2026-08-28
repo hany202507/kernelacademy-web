@@ -10,7 +10,10 @@ import { definition } from '../lib/canon';
 export const GET: APIRoute = async () => {
   const blocks = (await getCollection('blocks')).sort((a, b) => a.data.order - b.data.order);
   const workflows = (await getCollection('workflows')).sort((a, b) => a.data.order - b.data.order);
-  const posts = (await getCollection('insights')).sort((a, b) => a.data.order - b.data.order);
+  // 사이트 목록과 같은 순서로 — 최신 글이 먼저, 같은 날은 연재 순서
+  const posts = (await getCollection('insights')).sort(
+    (a, b) => b.data.published.valueOf() - a.data.published.valueOf() || a.data.order - b.data.order
+  );
 
   const body = `# ${SITE.name}
 

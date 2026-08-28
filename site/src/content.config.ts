@@ -43,6 +43,7 @@ const insights = defineCollection({
     lede: z.string(),
     published: z.coerce.date(),
     updated: z.coerce.date(),
+    /** 같은 날 올린 글끼리의 순서. 목록은 발행일 내림차순이 먼저다 — 연재 순서를 지키는 용도. */
     order: z.number(),
     /** 어느 학습단계에서 쓰이는 이야기인가. 글을 커리큘럼에 걸어 두기 위한 표시. */
     stage: z.enum(['T1 리터러시', 'T2 실무', 'T3 어드바이저']),
