@@ -52,7 +52,7 @@ ${workflows
 - [자료 이용 조건](${SITE.url}/about/license) — 개인 학습은 조건 없음, 가르치는 용도만 사용 등록
 - [프로그램 소개](${SITE.url}/program) — 학습단계 T1·T2·T3, 회차 리듬, 실제로 쓰이고 있는 자리
 - [기능별 훈련](${SITE.url}/program/blocks) — 6개 기능(R·C·P·J·V·D), 역량 매핑, 난이도 사다리
-- [워크플로우](${SITE.url}/program/workflows) — 업무 7갈래 조립도와 기능×업무 전체 지도
+- [워크플로우](${SITE.url}/program/workflows) — 일곱 업무의 조립 순서와 기능×업무 전체 표
 - [블로그](${SITE.url}/insights) — 커리큘럼 설계의 근거. AI 트렌드 조사와 재무AX 현장 사례
 - [가입하기](${SITE.url}/join) — 자료 공개 알림 신청. 열람에는 가입이 필요하지 않습니다
 - [개인정보 처리방침](${SITE.url}/privacy)

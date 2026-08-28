@@ -1,5 +1,5 @@
 ---
-// 재무 업무의 사슬에서 글로벌 과정이 덮는 구간과 비는 구간
+// 재무 업무의 흐름에서 글로벌 과정이 덮는 구간과 비는 구간
 const CHAIN = [
   { t: '데이터 확보', covered: false, note: '연동 실습 없음' },
   { t: '분석·예측', covered: true, note: '' },
@@ -18,12 +18,12 @@ const total = 250;
 
 <svg viewBox={`0 0 ${W} ${total}`} role="img" aria-labelledby="ec-t">
   <title id="ec-t">
-    재무 업무 사슬 다섯 구간 중 글로벌 과정이 덮는 것은 분석과 보고 두 구간뿐이고,
+    재무 업무 다섯 구간 중 글로벌 과정이 덮는 것은 분석과 보고 두 구간뿐이고,
     데이터 확보·제도권 실무·검증 세 구간은 비어 있다.
   </title>
 
   <text x="0" y="14" font-size="11" font-weight="600" letter-spacing="0.1em" class="t-faint">
-    재무 업무의 사슬
+    재무 업무의 흐름
   </text>
 
   {
@@ -79,7 +79,7 @@ const total = 250;
 
   <g>
     <text x="0" y={boxY + BH + 74} font-size="12" font-weight="600" fill="var(--b-J)">
-      비어 있는 세 칸이 하필 회계사에게 가장 중요한 칸입니다
+      비어 있는 세 구간이 회계사에게는 가장 중요합니다
     </text>
     <text x="0" y={boxY + BH + 94} font-size="11.5" class="t-mute">
       데이터를 못 가져오면 실습이 안 되고, 검증이 없으면 업무에 못 씁니다.
