@@ -45,6 +45,17 @@ export const YOUTUBE = {
   desc: '결산·회계기준 검토·리서치 자동화 시연',
 } as const;
 
+/**
+ * 저자. 스키마의 author 와 화면의 바이라인이 같은 곳을 본다.
+ * 누가 썼는지 화면에 보이지 않으면 검색·LLM 이 신뢰 신호로 세지 못한다.
+ */
+export const AUTHOR = {
+  name: '박상정',
+  title: '공인회계사',
+  bio: 'KICPA AI 자문위원. 세종대학교 AI 재무분석 출강. 결산·세무 실무에 AI를 붙여 온 기록을 씁니다.',
+  url: 'https://kernelacademy.io/about',
+} as const;
+
 /** GNB — 5개 상한 (14번 §2-1). 지금 3개. */
 export const NAV = [
   {

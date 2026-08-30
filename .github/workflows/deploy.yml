@@ -34,6 +34,20 @@ jobs:
         with:
           path: site/dist
 
+  # 발행 즉시 Bing 계열에 알린다. ChatGPT·Copilot·Perplexity 가 Bing 인덱스를
+  # 많이 참조하므로, 색인이 하루 이틀 빨라지는 것이 그대로 AI 노출로 이어진다.
+  # 실패해도 배포를 막지 않는다(|| true).
+  indexnow:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: sitemap 의 URL 을 IndexNow 로 통보
+        run: |
+          KEY=bd2639b19de64135aed51d131c3cadf9
+          URLS=$(curl -s https://kernelacademy.io/sitemap-0.xml             | grep -o "<loc>[^<]*</loc>" | sed "s|</\?loc>||g"             | head -100 | sed "s|^|\"|; s|$|\"|" | paste -sd, -)
+          curl -sS -X POST "https://api.indexnow.org/indexnow"             -H "Content-Type: application/json"             -d "{\"host\":\"kernelacademy.io\",\"key\":\"$KEY\",\"keyLocation\":\"https://kernelacademy.io/$KEY.txt\",\"urlList\":[$URLS]}" || true
+
   deploy:
     needs: build
     runs-on: ubuntu-latest

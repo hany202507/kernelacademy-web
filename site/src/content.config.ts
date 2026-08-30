@@ -53,6 +53,11 @@ const insights = defineCollection({
     /** 본문 하단 출처 블록. 조사일이 붙은 문서가 근거로 말한다는 신호가 된다. */
     sources: z.array(z.object({ label: z.string(), note: z.string().optional() })).default([]),
     /**
+     * 세 줄 요약. 글 첫 화면에 놓는다.
+     * LLM 이 통째로 인용해 가기 가장 쉬운 덩어리라, 결론을 여기서 다 말한다.
+     */
+    tldr: z.array(z.string()).default([]),
+    /**
      * 자주 받는 질문. 본문 아래에 렌더링되고 동시에 FAQPage 구조화데이터로 나간다.
      * 본문에 Q&A 를 또 쓰지 않는다 — 두 군데 두면 다음 개정에서 갈라진다.
      * 답은 인용될 것을 전제로 한 문단 단언형으로 쓴다(AI 답변 인용 = AEO).

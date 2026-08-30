@@ -4,7 +4,7 @@ import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import PhaseTimeline from '../../components/PhaseTimeline.astro';
 import PostCover from '../../components/PostCover.astro';
-import { SITE, CATEGORIES } from '../../data/site';
+import { SITE, CATEGORIES, AUTHOR } from '../../data/site';
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const posts = await getCollection('insights');
@@ -24,7 +24,7 @@ const schema = {
   datePublished: fmt(d.published),
   dateModified: fmt(d.updated),
   inLanguage: 'ko',
-  author: { '@type': 'Person', name: '박상정' },
+  author: { '@type': 'Person', name: AUTHOR.name, jobTitle: AUTHOR.title, url: AUTHOR.url },
   publisher: { '@type': 'Organization', name: SITE.name, url: SITE.url },
 };
 
@@ -59,12 +59,15 @@ const schemas = faqSchema ? [schema, faqSchema] : schema;
       </p>
       <h1>{d.title}</h1>
       <p class="lede">{d.lede}</p>
-      <p class="meta small muted">
-        <time datetime={fmt(d.published)} class="num">{fmt(d.published)}</time>
-        {fmt(d.updated) !== fmt(d.published) && (
-          <span class="num">· updated {fmt(d.updated)}</span>
-        )}
+      {/* 누가 언제 썼고 언제 고쳤는지. 화면에 없으면 신뢰 신호로 세지 못한다. */}
+      <p class="byline small">
+        <strong>{AUTHOR.name}</strong> <span class="muted">{AUTHOR.title}</span>
+        <span class="sep">·</span>
+        <time datetime={fmt(d.published)} class="num muted">{fmt(d.published)} 발행</time>
+        <span class="sep">·</span>
+        <time datetime={fmt(d.updated)} class="num muted">{fmt(d.updated)} 최종 수정</time>
       </p>
+      <p class="bio small muted">{AUTHOR.bio} <a href={AUTHOR.url}>소개</a></p>
     </div>
   </section>
 
@@ -80,6 +83,19 @@ const schemas = faqSchema ? [schema, faqSchema] : schema;
 
   <article class="section article-body">
     <div class="prose">
+      {
+        d.tldr.length > 0 && (
+          <aside class="tldr" aria-label="세 줄 요약">
+            <p class="tldr-h">세 줄 요약</p>
+            <ul>
+              {d.tldr.map((t) => (
+                <li>{t}</li>
+              ))}
+            </ul>
+          </aside>
+        )
+      }
+
       <div class="body">
         <Content components={{ PhaseTimeline }} />
       </div>
@@ -155,6 +171,30 @@ const schemas = faqSchema ? [schema, faqSchema] : schema;
   }
   .body :global(h2) { scroll-margin-top: 5rem; }
   .body :global(img) { max-width: 100%; height: auto; }
+
+  .byline { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: baseline; margin-bottom: 0.35rem; }
+  .byline .sep { color: var(--ink-3); }
+  .bio { margin-bottom: 0; max-width: 34rem; line-height: 1.6; }
+
+  /* 첫 화면에 결론을 놓는 자리. 본문보다 먼저 읽히도록 지면을 준다. */
+  .tldr {
+    margin: 0 0 2.5rem;
+    padding: 1.1rem 1.35rem;
+    border-left: 3px solid var(--brand);
+    background: var(--tint-soft);
+    border-radius: 0 3px 3px 0;
+  }
+  .tldr-h {
+    margin: 0 0 0.6rem;
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--brand);
+  }
+  .tldr ul { margin: 0; padding-left: 1.1rem; }
+  .tldr li { margin-bottom: 0.4em; line-height: 1.65; }
+  .tldr li:last-child { margin-bottom: 0; }
 
   .faq { margin-top: 3.5rem; }
   .faq > h2 { font-size: 1.35rem; margin-bottom: 1.25rem; }
