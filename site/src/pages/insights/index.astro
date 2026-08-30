@@ -115,7 +115,7 @@ const TABS = [{ key: 'all', label: '전체', n: posts.length }, ...주제.map((g
               <p class:list={['empty', `empty--${g.key}`]}>
                 {/* 조사를 붙이지 않는다. 주제 이름의 받침이 제각각이라
                     「은/는」을 하드코딩하면 「재무AX 성공사례은」이 된다. */}
-                <strong>{g.label}</strong> — 아직 글이 없습니다. 첫 글을 쓰는 대로 여기에 올립니다.
+                <strong>{g.label}</strong>. 아직 글이 없습니다. 첫 글을 쓰는 대로 여기에 올립니다.
               </p>
             ))
         }

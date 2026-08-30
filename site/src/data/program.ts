@@ -45,7 +45,7 @@ export const DOMAINS = [
     id: 'D1',
     name: 'AI 기초 이해',
     desc: 'LLM이 어떻게 움직이는지를 재무인의 말로. 할 수 있는 것과 없는 것의 경계',
-    maps: '원리 — 왜 재무 AI는 다른가',
+    maps: '원리 · 왜 재무 AI는 다른가',
     href: null,
     gap: false,
   },

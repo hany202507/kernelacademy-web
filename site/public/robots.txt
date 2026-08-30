@@ -3,7 +3,7 @@
 User-agent: *
 Allow: /
 
-# 로그인 뒤에만 뜻이 있는 화면 — 색인해 봐야 빈 껍데기만 잡힌다.
+# 로그인 뒤에만 뜻이 있는 화면, 색인해 봐야 빈 껍데기만 잡힌다.
 Disallow: /login
 Disallow: /me
 Disallow: /materials

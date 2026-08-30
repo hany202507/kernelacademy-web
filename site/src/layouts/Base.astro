@@ -24,7 +24,7 @@ const {
 const ogImage = new URL(image, SITE.url).href;
 /** 크기는 기본 카드일 때만 밝힌다. 글 표지는 비율이 제각각이라 잘못 적으면 오히려 어긋난다. */
 const ogSized = image === '/og.png';
-const fullTitle = title ? `${title} — ${SITE.name}` : `${SITE.name} — ${SITE.tagline}`;
+const fullTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} · ${SITE.tagline}`;
 /**
  * 현재 경로. build.format: 'file' 이라 빌드 산출물에서는 `/about.html` 로 들어온다.
  * 개발 서버(`/about`)와 값이 달라 그대로 비교하면 구역 판정이 빌드에서만 어긋난다.

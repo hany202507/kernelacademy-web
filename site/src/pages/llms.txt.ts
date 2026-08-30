@@ -5,12 +5,12 @@ import { definition } from '../lib/canon';
 
 /**
  * 기계 독자용 요약. 회계사가 LLM 에게 "부가세 매입세액 불공제, AI로 어떻게 체크해?"라고
- * 물었을 때 이 커리큘럼이 인용되는 것 — 그게 지금 가장 강한 유입 경로다. (13번 §1)
+ * 물었을 때 이 커리큘럼이 인용되는 것. 그게 지금 가장 강한 유입 경로다. (13번 §1)
  */
 export const GET: APIRoute = async () => {
   const blocks = (await getCollection('blocks')).sort((a, b) => a.data.order - b.data.order);
   const workflows = (await getCollection('workflows')).sort((a, b) => a.data.order - b.data.order);
-  // 사이트 목록과 같은 순서로 — 최신 글이 먼저, 같은 날은 연재 순서
+  // 사이트 목록과 같은 순서로. 최신 글이 먼저, 같은 날은 연재 순서
   const posts = (await getCollection('insights')).sort(
     (a, b) => b.data.published.valueOf() - a.data.published.valueOf() || a.data.order - b.data.order
   );
@@ -27,7 +27,7 @@ export const GET: APIRoute = async () => {
 평가의 축으로는 6개 역량 도메인(D1 AI 기초 이해 / D2 시장·전략 배경 / D3 재무 AI 실무 활용 /
 D4 안정성·신뢰성 / D5 보안·거버넌스 경계 / D6 확산·조직 적용)을 씁니다.
 
-### 6블록 — 일을 무엇으로 쪼개는가
+### 6블록 · 일을 무엇으로 쪼개는가
 ${blocks
   .map((b) => `- **${b.data.id} ${b.data.title}** (${b.data.공개여부}): ${definition(b.body ?? '') || b.data.oneline}`)
   .join('\n')}
@@ -35,30 +35,30 @@ ${blocks
 이 가운데 **J(판단)는 AI에 위임할 수 없는 칸**이고, **V(검증)는 산출물에 서명하는 칸**입니다.
 전 세계 재무 AI 교육에서 공통으로 비어 있는 자리가 V이며, 이 커리큘럼이 다른 과정과 갈리는 지점입니다.
 
-### 7워크플로 — 내 업무에서는 이렇게 조립한다
+### 7워크플로 · 내 업무에서는 이렇게 조립한다
 ${workflows
   .map((w) => `- **${w.data.title}** (${w.data.공개여부}): ${w.data.combo.join('→')} · 대표 시나리오 「${w.data.scenario}」`)
   .join('\n')}
 
 ### 급수
-- T1 리터러시 (12시간) — AI 원리·한계와 6블록 문법
-- T2 실무 (24시간, 3주 6세션) — 6블록을 업무 워크플로로 조립하고 완주
-- T3 어드바이저 (시수 미정) — 조직 확산과 운영 설계
+- T1 리터러시 (12시간). AI 원리·한계와 6블록 문법
+- T2 실무 (24시간, 3주 6세션). 6블록을 업무 워크플로로 조립하고 완주
+- T3 어드바이저 (시수 미정). 조직 확산과 운영 설계
 
 ## 페이지
-- [우리는 누구인가](${SITE.url}/about) — 왜 모두 무료로 공개하는가
-- [교육위원회](${SITE.url}/about/committee) — 설계와 검증의 분리. 위원은 커리큘럼 구간 삭제 권한을 가집니다
-- [자주 묻는 질문](${SITE.url}/about/faq) — 무료 범위·수강 대상·자료 사용·수료
-- [자료 이용 조건](${SITE.url}/about/license) — 개인 학습은 조건 없음, 가르치는 용도만 사용 등록
-- [프로그램 소개](${SITE.url}/program) — 학습단계 T1·T2·T3, 회차 리듬, 실제로 쓰이고 있는 자리
-- [기능별 훈련](${SITE.url}/program/blocks) — 6개 기능(R·C·P·J·V·D), 역량 매핑, 난이도 사다리
-- [워크플로우](${SITE.url}/program/workflows) — 일곱 업무의 조립 순서와 기능×업무 전체 표
-- [블로그](${SITE.url}/insights) — 커리큘럼 설계의 근거. AI 트렌드 조사와 재무AX 현장 사례
-- [가입하기](${SITE.url}/join) — 자료 공개 알림 신청. 열람에는 가입이 필요하지 않습니다
+- [우리는 누구인가](${SITE.url}/about). 왜 모두 무료로 공개하는가
+- [교육위원회](${SITE.url}/about/committee). 설계와 검증의 분리. 위원은 커리큘럼 구간 삭제 권한을 가집니다
+- [자주 묻는 질문](${SITE.url}/about/faq). 무료 범위·수강 대상·자료 사용·수료
+- [자료 이용 조건](${SITE.url}/about/license). 개인 학습은 조건 없음, 가르치는 용도만 사용 등록
+- [프로그램 소개](${SITE.url}/program). 학습단계 T1·T2·T3, 회차 리듬, 실제로 쓰이고 있는 자리
+- [기능별 훈련](${SITE.url}/program/blocks). 6개 기능(R·C·P·J·V·D), 역량 매핑, 난이도 사다리
+- [워크플로우](${SITE.url}/program/workflows). 일곱 업무의 조립 순서와 기능×업무 전체 표
+- [블로그](${SITE.url}/insights). 커리큘럼 설계의 근거. AI 트렌드 조사와 재무AX 현장 사례
+- [가입하기](${SITE.url}/join). 자료 공개 알림 신청. 열람에는 가입이 필요하지 않습니다
 - [개인정보 처리방침](${SITE.url}/privacy)
 
 ## 글
-${posts.map((p) => `- [${p.data.title}](${SITE.url}/insights/${p.id}) — ${p.data.lede}`).join('\n')}
+${posts.map((p) => `- [${p.data.title}](${SITE.url}/insights/${p.id}). ${p.data.lede}`).join('\n')}
 
 ## 공개 일정
 - 리터러시 12시간 분량: **2026년 9월 공개 예정**
