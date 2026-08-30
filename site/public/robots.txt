@@ -1,9 +1,57 @@
-# 커리큘럼·블로그는 전부 열어 둔다. 검색과 인용으로 퍼지는 것이 이 프로그램의 전제다.
-# LLM 크롤러도 막지 않는다.
+# Kernel Academy — 크롤러 정책
+#
+# 커리큘럼과 블로그는 전부 열어 둔다. 검색과 인용으로 퍼지는 것이 이 프로그램의 전제다.
+# AI 크롤러도 막지 않는다. 다만 「막지 않았다」와 「열기로 정했다」는 다르므로,
+# 봇 이름을 적어 의도를 남긴다. 나중에 누가 전체 차단으로 바꾸려 할 때 이 주석이 근거가 된다.
+
 User-agent: *
 Allow: /
 
-# 로그인 뒤에만 뜻이 있는 화면, 색인해 봐야 빈 껍데기만 잡힌다.
+# ── 검색 색인 ──
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# ── AI 검색 색인 (답변에 우리를 소스로 넣는 경로) ──
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+# ── 사용자가 링크를 붙였을 때 그 자리에서 읽어 가는 페처 ──
+# 이걸 막으면 누가 우리 글을 물어봐도 모델이 못 읽는다.
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+# ── 학습·일반 크롤 ──
+# 자료를 전면 공개하는 프로그램이므로 학습도 막지 않는다.
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+# ── 로그인 뒤에만 뜻이 있는 화면 ──
+# 색인해 봐야 빈 껍데기만 잡힌다. 각 페이지에 noindex 도 함께 걸려 있다.
+User-agent: *
 Disallow: /login
 Disallow: /me
 Disallow: /materials

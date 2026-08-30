@@ -45,12 +45,72 @@ const canonical = new URL(path, SITE.url).href.replace(/(.)\/$/, '$1');
 const org = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
+  '@id': `${SITE.url}#org`,
   name: SITE.name,
   url: SITE.url,
   description: SITE.description,
+  logo: `${SITE.url}/og.png`,
+  // 외부 프로필을 걸어 둔다. 검색·LLM 이 같은 주체로 묶는 근거가 된다.
+  sameAs: [YOUTUBE.url, COMPANY.site],
   parentOrganization: { '@type': 'Organization', name: COMPANY.name, url: COMPANY.site },
 };
-const schemas = [org, ...(schema ? (Array.isArray(schema) ? schema : [schema]) : [])];
+
+/**
+ * WebSite 는 홈에만 한 번. 이게 없으면 검색결과의 사이트 이름이 도메인이나
+ * 엉뚱한 문자열로 잡힌다. 사이트에 검색 기능이 없으므로 SearchAction 은 넣지 않는다.
+ */
+const website =
+  path === '/'
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        '@id': `${SITE.url}#website`,
+        name: SITE.name,
+        alternateName: '커널 아카데미',
+        url: SITE.url,
+        inLanguage: 'ko',
+        publisher: { '@id': `${SITE.url}#org` },
+      }
+    : null;
+
+/**
+ * 하위 페이지의 위계. 경로를 그대로 빵부스러기로 만든다.
+ * 이름은 NAV 에서 찾고, 없으면 페이지 제목을 쓴다.
+ */
+const segs = path.split('/').filter(Boolean);
+const navLabel = (href: string): string | undefined => {
+  for (const n of NAV) {
+    if (n.href === href) return n.label;
+    for (const c of (n as any).children ?? []) if (c.href === href) return c.label;
+  }
+  return undefined;
+};
+const breadcrumb =
+  segs.length > 0
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: '홈', item: SITE.url },
+          ...segs.map((_, i) => {
+            const href = '/' + segs.slice(0, i + 1).join('/');
+            return {
+              '@type': 'ListItem',
+              position: i + 2,
+              name: navLabel(href) ?? (i === segs.length - 1 ? (title ?? href) : segs[i]),
+              item: SITE.url + href,
+            };
+          }),
+        ],
+      }
+    : null;
+
+const schemas = [
+  org,
+  ...(website ? [website] : []),
+  ...(breadcrumb ? [breadcrumb] : []),
+  ...(schema ? (Array.isArray(schema) ? schema : [schema]) : []),
+];
 
 /** 하위 메뉴는 감추지 않는다. 지금 서 있는 구역의 하위 항목이 늘 두 번째 줄에 보인다. */
 const navItems = NAV.map((item) => ({
@@ -140,10 +200,11 @@ const csp = [
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={ogImage} />
     <link rel="alternate" type="application/rss+xml" title={SITE.name} href="/rss.xml" />
-    <link
-      rel="icon"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231c1c1a'/%3E%3Ctext x='16' y='22' font-family='system-ui' font-size='17' font-weight='700' fill='%23fff' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E"
-    />
+    {/* 실제 파일로 둔다. data URI 만 두면 /favicon.ico 가 404 라, 루트 파비콘만
+        찾는 크롤러·리더에는 아이콘이 없는 사이트가 된다. */}
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
     {schemas.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
   </head>
 

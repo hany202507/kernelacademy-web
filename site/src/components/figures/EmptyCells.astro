@@ -1,11 +1,12 @@
 ---
-// 재무 업무의 흐름에서 글로벌 과정이 덮는 구간과 비는 구간
+// 도구가 어디까지 하고, 각 구간에 무엇이 남는가 (2026-08-28 재확인)
+// covered: 도구가 덮음 / half: 절반만 덮음. note 에 「무엇이 없는지」를 이름으로 적는다.
 const CHAIN = [
-  { t: '데이터 확보', covered: false, note: '연동 실습 없음' },
-  { t: '분석·예측', covered: true, note: '' },
-  { t: '보고·커멘터리', covered: true, note: '' },
-  { t: '제도권 실무', covered: false, note: '결산·세무·감사' },
-  { t: '검증·서명', covered: false, note: '대사·tie-out' },
+  { t: '데이터 확보', covered: false, half: true, note: '국내 시스템 없음' },
+  { t: '분석·예측', covered: true, half: false, note: '' },
+  { t: '보고·커멘터리', covered: true, half: false, note: '' },
+  { t: '제도권 실무', covered: false, half: true, note: '한국 제도 없음' },
+  { t: '검증·서명', covered: false, half: true, note: '결과 확인 없음' },
 ];
 
 const W = 640;
@@ -18,8 +19,8 @@ const total = 250;
 
 <svg viewBox={`0 0 ${W} ${total}`} role="img" aria-labelledby="ec-t">
   <title id="ec-t">
-    재무 업무 다섯 구간 중 글로벌 과정이 덮는 것은 분석과 보고 두 구간뿐이고,
-    데이터 확보·제도권 실무·검증 세 구간은 비어 있다.
+    재무 업무 다섯 구간 중 분석과 보고는 도구가 덮었고, 데이터 확보·제도권 실무·검증은
+    절반만 덮였다. 남은 것은 국내 시스템, 한국 제도, 그리고 결과 확인이다.
   </title>
 
   <text x="0" y="14" font-size="11" font-weight="600" letter-spacing="0.1em" class="t-faint">
@@ -31,6 +32,7 @@ const total = 250;
       const x = i * (BW + BG);
       return (
         <g>
+          {c.half && <rect x={x} y={boxY} width={BW / 2} height={BH} class="f-soft" />}
           <rect
             x={x}
             y={boxY}
@@ -50,14 +52,12 @@ const total = 250;
             font-size="10.5"
             text-anchor="middle"
             class="t-faint"
+            font-weight={c.half ? '600' : '400'}
+            fill={c.half ? 'var(--b-J)' : undefined}
           >
             {c.note}
           </text>
-          {!c.covered && (
-            <text x={x + BW / 2} y={boxY + 66} font-size="10.5" font-weight="600" text-anchor="middle" fill="var(--b-J)">
-              비어 있음
-            </text>
-          )}
+
           {i < CHAIN.length - 1 && (
             <path
               d={`M ${x + BW + 2} ${boxY + BH / 2} l 9 0 m -4 -3.5 l 4 3.5 l -4 3.5`}
@@ -73,16 +73,16 @@ const total = 250;
   <g>
     <line x1={BW + BG} y1={boxY + BH + 20} x2={2 * BW + BG + BW} y2={boxY + BH + 20} class="s-ink" stroke-width="2" />
     <text x={BW + BG} y={boxY + BH + 40} font-size="11.5" class="t-mute">
-      글로벌 12개 과정이 덮는 구간
+      도구가 덮은 구간
     </text>
   </g>
 
   <g>
     <text x="0" y={boxY + BH + 74} font-size="12" font-weight="600" fill="var(--b-J)">
-      비어 있는 세 구간이 회계사에게는 가장 중요합니다
+      남은 절반이 회계사에게는 가장 중요합니다
     </text>
     <text x="0" y={boxY + BH + 94} font-size="11.5" class="t-mute">
-      데이터를 못 가져오면 실습이 안 되고, 검증이 없으면 업무에 못 씁니다.
+      국내 자료를 못 가져오면 실습이 안 되고, 결과를 확인하지 못하면 업무에 못 씁니다.
     </text>
   </g>
 </svg>
