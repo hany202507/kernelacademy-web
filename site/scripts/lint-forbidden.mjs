@@ -89,4 +89,52 @@ if (total > 0) {
   process.exit(1);
 }
 
+/**
+ * AI 톤 게이트 (2026-09-02 추가)
+ *
+ * 대표 지적: "블로그·슬라이드·여러 문서에서 여전히 AI 스러운 표현이 많다."
+ * 발행글을 세어 정한 규칙이라 근거가 있다 —
+ * work/docs/superpowers/specs/2026-09-02-linkedin-tone-calibration.md
+ *
+ * HARD 는 대체어가 늘 있어서 예외를 둘 이유가 없는 것들이다. 빌드를 세운다.
+ * SOFT 는 진짜 용어와 겹치거나(반올림 자리) 정당한 대조가 있어서 세면 되는 것들이다.
+ * 오탐을 하드로 두면 게이트 전체가 무시된다(2026-08-12 교훈).
+ */
+const TONE_HARD = [
+  ['갈래', '실제 항목 이름을 부른다'],
+  ['사다리', '단계'],
+  ['행선지', '무엇을 하는지'],
+  ['층위', '수준'],
+  ['—', '마침표 · 쉼표 · 괄호로 (중점 · 은 허용)'],
+  ['▍', 'H2 만 남기거나 1/ ~ 5/ 번호로'],
+];
+const TONE_SOFT = [
+  [/(?<!일)(?<!반올림 )자리/g, '자리'],
+  [/아니라|아닌(?=\s)/g, '아니라·아닌 대구'],
+];
+
+let toneTotal = 0;
+const soft = new Map();
+for (const f of files) {
+  const raw = scrub(readFileSync(f, 'utf8'));
+  const text = raw.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<[^>]+>/g, ' ');
+  for (const [w, fix] of TONE_HARD) {
+    const n = text.split(w).length - 1;
+    if (!n) continue;
+    toneTotal += n;
+    console.error(`✗ ${relative(process.cwd(), f)}  「${w}」 ${n}건 → ${fix}`);
+  }
+  for (const [re, label] of TONE_SOFT) {
+    const n = (text.match(re) || []).length;
+    if (n) soft.set(label, (soft.get(label) || 0) + n);
+  }
+}
+for (const [label, n] of soft) {
+  console.log(`△ ${label} ${n}건 — 셀 수 있으면 실제 이름으로. 인용문 안이면 그대로 둔다`);
+}
+if (toneTotal > 0) {
+  console.error(`\n🔴 AI 톤 ${toneTotal}건. 위 대체어로 고치고 다시 빌드하세요.`);
+  process.exit(1);
+}
+
 console.log(`✅ 금칙어 검사 통과 — HTML ${files.length}개`);

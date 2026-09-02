@@ -10,7 +10,7 @@ import { CATEGORIES } from '../data/site';
  * 여기까지 오시는 경로는 대개 셋이다 — 오래된 링크, 오타, 그리고 아직 열리지 않은
  * 커리큘럼 주소. 그래서 "없습니다" 로 끝내지 않고 갈 곳을 함께 둔다.
  */
-const 갈래 = Object.values(CATEGORIES);
+const 분류 = Object.values(CATEGORIES);
 ---
 
 <Base
@@ -24,7 +24,7 @@ const 갈래 = Object.values(CATEGORIES);
       <h1>찾으시는 페이지가 없습니다</h1>
       <p class="lede">
         <span class="s">주소가 바뀌었거나 <strong>아직 열지 않은 페이지</strong>일 수 있습니다.</span>
-        <span class="s">커리큘럼은 리터러시 12시간이 2026년 9월, 실무 24시간이 10월에 열립니다.</span>
+        <span class="s">리터러시 2시간은 자료실에서 바로 받으실 수 있습니다. 실무 12시간은 2026년 9월, 심화 24시간은 10월에 엽니다.</span>
       </p>
     </div>
   </section>
@@ -39,7 +39,7 @@ const 갈래 = Object.values(CATEGORIES);
         </li>
         <li>
           <a href="/insights">블로그</a>
-          <span>{갈래.map((c) => c.label).join(' · ')}</span>
+          <span>{분류.map((c) => c.label).join(' · ')}</span>
         </li>
         <li>
           <a href="/about">우리는 누구인가</a>
